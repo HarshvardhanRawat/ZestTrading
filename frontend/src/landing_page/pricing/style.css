@@ -1,0 +1,270 @@
+
+
+/* Keyframe Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blobPulse {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+  33% {
+    transform: scale(1.1) translate(20px, -20px);
+  }
+  66% {
+    transform: scale(0.9) translate(-20px, 20px);
+  }
+  100% {
+    transform: scale(1) translate(0, 0);
+  }
+}
+
+@keyframes backgroundPan {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Animation Utility Classes */
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+
+.animate-blob {
+  animation: blobPulse 10s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Gradient Utilities */
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-primary), #00aaff, var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% 200%;
+  animation: backgroundPan 5s ease infinite;
+}
+
+.cta-gradient {
+  background: linear-gradient(135deg, var(--color-primary-container), #004d90, var(--color-primary));
+  position: relative;
+  overflow: hidden;
+}
+.cta-gradient::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 60%);
+  animation: backgroundPan 10s linear infinite;
+  pointer-events: none;
+}
+
+/* Premium Card (Glassmorphism & Soft Glow) */
+.premium-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 40px rgba(0, 92, 171, 0.1);
+  border-color: rgba(0, 92, 171, 0.2);
+}
+
+/* Specific glow for the "Popular" card */
+.premium-card.popular-card {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 92, 171, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 92, 171, 0.1);
+}
+.premium-card.popular-card:hover {
+  box-shadow: 0 16px 40px rgba(0, 92, 171, 0.2);
+  border-color: var(--color-primary);
+}
+
+/* Popular Tag Badge */
+.popular-badge {
+  background: linear-gradient(135deg, #ff4d4d, #dc3128);
+  color: white;
+  box-shadow: 0 2px 10px rgba(220, 49, 40, 0.3);
+}
+
+/* Table Enhancements */
+.pricing-table-container {
+  background: var(--color-surface-container-lowest);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--color-outline-variant);
+  transition: box-shadow 0.3s ease;
+}
+
+.pricing-table-container:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.table-row-hover {
+  transition: all 0.2s ease;
+}
+.table-row-hover:hover {
+  background-color: var(--color-surface-container-low);
+  transform: scale(1.005);
+  z-index: 10;
+  position: relative;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+
+/* Interactive Elements */
+.hover-scale {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+}
+.hover-scale:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+.hover-scale:active {
+  transform: scale(0.95);
+}
+
+.btn-premium {
+  background: linear-gradient(135deg, var(--color-primary), #0073d1);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 15px rgba(0, 92, 171, 0.3);
+  transition: all 0.3s ease;
+}
+.btn-premium:hover {
+  box-shadow: 0 6px 20px rgba(0, 92, 171, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Pricing Page Enhancements */
+.pricing-hero {
+  background: radial-gradient(circle at 15% 20%, rgba(0, 92, 171, 0.18), transparent 25%), linear-gradient(180deg, rgba(248, 252, 255, 0.96), rgba(255, 255, 255, 0.98));
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing-hero::before,
+.pricing-hero::after {
+  content: '';
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  opacity: 0.58;
+}
+
+.pricing-hero::before {
+  width: 24rem;
+  height: 24rem;
+  top: -7rem;
+  right: -8rem;
+  background: rgba(45, 118, 200, 0.16);
+}
+
+.pricing-hero::after {
+  width: 18rem;
+  height: 18rem;
+  bottom: -8rem;
+  left: -5rem;
+  background: rgba(0, 92, 171, 0.12);
+}
+
+.pricing-hero-content {
+  position: relative;
+  z-index: 1;
+  padding: 0 0 2rem;
+}
+
+.pricing-card-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .pricing-card-grid {
+    gap: 2.5rem;
+  }
+}
+
+.pricing-summary {
+  max-width: 720px;
+}
+
+.pricing-table-container {
+  overflow-x: auto;
+}
+
+.pricing-table-container table {
+  min-width: 720px;
+}
+
+.pricing-table-container th,
+.pricing-table-container td {
+  padding: 1.5rem 1.25rem;
+}
+
+.pricing-table-container thead th {
+  background: rgba(244, 247, 255, 0.95);
+  border-bottom: 1px solid rgba(226, 226, 229, 0.9);
+}
+
+.pricing-table-container tbody tr:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.pricing-table-container tbody tr:nth-child(even) {
+  background: rgba(244, 248, 255, 0.7);
+}
+
+.pricing-table-container tbody tr.table-row-hover:hover {
+  background: rgba(232, 242, 255, 0.9);
+}
+
+.pricing-table-container .font-data-mono {
+  font-feature-settings: 'tnum';
+}
+
+.pricing-brokerage-section {
+  position: relative;
+}
+
+@media (max-width: 767px) {
+  .pricing-hero {
+    padding-top: 4rem;
+    padding-bottom: 3rem;
+  }
+
+  .pricing-hero::before,
+  .pricing-hero::after {
+    display: none;
+  }
+}

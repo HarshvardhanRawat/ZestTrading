@@ -1,0 +1,160 @@
+/* Product Page Specific Styles */
+.product-page-section {
+    padding: 4rem 1.5rem;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    .product-page-section {
+        padding: 4rem 2rem;
+    }
+}
+
+.product-feature-section {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.product-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.5rem;
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+}
+
+.product-hero-title {
+    max-width: 64rem;
+}
+
+.product-hero-subtitle {
+    max-width: 48rem;
+    line-height: 1.7;
+}
+
+.product-feature-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4rem;
+}
+
+@media (min-width: 768px) {
+    .product-feature-row {
+        flex-direction: row;
+        gap: 4rem;
+    }
+}
+
+.product-feature-row.reverse {
+    flex-direction: column;
+}
+
+@media (min-width: 768px) {
+    .product-feature-row.reverse {
+        flex-direction: row-reverse;
+    }
+}
+
+.product-feature-image-container {
+    flex: 1 1 50%;
+    width: 100%;
+}
+
+.product-feature-image-wrapper {
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    border: 1px solid var(--color-surface-variant);
+    background-color: var(--color-surface-container-lowest);
+    box-shadow: var(--shadow-md);
+}
+
+.product-feature-content {
+    flex: 1 1 50%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.product-feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.product-feature-list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+}
+
+.product-feature-list-icon {
+    background-color: rgba(0, 92, 171, 0.08);
+    border-radius: var(--radius-full);
+    padding: 0.75rem;
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-feature-list-icon .material-symbols-outlined {
+    font-size: 28px;
+}
+
+.universe-section {
+    background-color: var(--color-surface-container-low);
+    padding: 6rem 1.5rem;
+    margin-top: 4rem;
+}
+
+@media (min-width: 768px) {
+    .universe-section {
+        padding: 6rem 2rem;
+    }
+}
+
+.universe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 3rem;
+    margin-top: 5rem;
+}
+
+.universe-card {
+    background-color: var(--color-surface-container-lowest);
+    padding: 3rem 2.5rem;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-surface-variant);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.universe-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    border-color: var(--color-outline-variant);
+}
+
+.universe-card-icon {
+    width: 4rem;
+    height: 4rem;
+    border-radius: var(--radius-full);
+    background-color: var(--color-primary-container);
+    color: var(--color-on-primary-container);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.universe-card-icon .material-symbols-outlined {
+    font-size: 32px;
+}
