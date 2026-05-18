@@ -1,7 +1,22 @@
-import React from "react";
-import {holdings} from "../../data/data.js"
+import React, {useState, useEffect} from "react";
+
+import axios from "axios";
+
+// import {holdings} from "../../data/data.js"
 
 const Holdings = () => {
+
+  const [AllHoldings, setAllHoldings] = useState([]); 
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/allHoldings')
+      .then(res => {
+        setAllHoldings(res.data);
+      })
+      .catch(err => {
+        console.error('Error fetching holdings:', err);
+      });
+  }, []);
 
   return (
     <div className="holdings-container">
@@ -32,7 +47,7 @@ const Holdings = () => {
 
       <div className="holdings-table-wrapper">
         <div className="table-header">
-          <h2>Holdings ({holdings.length})</h2>
+          <h2>Holdings ({AllHoldings.length})</h2>
           <button className="btn-analyze">
             <span className="material-symbols-outlined">analytics</span>
             Analyze Portfolio
@@ -52,7 +67,7 @@ const Holdings = () => {
               </tr>
             </thead>
             <tbody>
-              {holdings.map((stock, index) => (
+              {AllHoldings.map((stock, index) => (
                 <tr key={index} className="hover-row">
                   <td>
                     <div className="stock-info">

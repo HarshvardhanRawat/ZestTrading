@@ -1,7 +1,47 @@
-import React from "react";
-import {positions} from "../../data/data.js";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const Positions = () => {
+  const [allPositions, setAllPositions] = useState([]);
+
+  useEffect(() => {
+    axios.get("http://localhost:3000/allPositions")
+      .then((res) => {
+        setAllPositions(res.data);
+      })
+      .catch((err) => {
+        console.error("Error fetching positions:", err);
+      });
+  }, []);
+
+  const formatCurrency = (value) =>
+    value.toLocaleString("en-IN", {
+      style: "currency",
+      currency: "INR",
+    });
+
+  const parsePL = (pl) => {
+    const value = parseFloat(pl);
+    return Number.isFinite(value) ? value : 0;
+  };
+
+  const totalPositivePL = allPositions.reduce(
+    (acc, pos) =>
+      acc + (String(pos.type).toLowerCase() === "positive" ? parsePL(pos.pl) : 0),
+    0
+  );
+
+  const totalNegativePL = allPositions.reduce(
+    (acc, pos) =>
+      acc + (String(pos.type).toLowerCase() === "negative" ? parsePL(pos.pl) : 0),
+    0
+  );
+
+  const positivePL = formatCurrency(totalPositivePL);
+  const negativePL = formatCurrency(totalNegativePL);
+  const totalPL = formatCurrency(totalPositivePL + totalNegativePL);
+  const positionCount = allPositions.length;
+
   return (
     <div className="positions-container">
       <div className="summary-grid">
@@ -11,8 +51,8 @@ const Positions = () => {
             <span className="material-symbols-outlined secondary">trending_up</span>
           </div>
           <div className="value-row">
-            <h2 className="value secondary">+₹14,520.40</h2>
-            <span className="badge-pill secondary">+4.2%</span>
+            <h2 className="value secondary">{totalPL}</h2>
+            <span className="badge-pill secondary">{positionCount} Positions</span>
           </div>
           <div className="progress-bar">
             <div className="progress secondary" style={{ width: "65%" }}></div>
@@ -20,19 +60,19 @@ const Positions = () => {
         </div>
         <div className="summary-card">
           <div className="card-header">
-            <span className="label">Unrealized P&L</span>
+            <span className="label">Positive P&L</span>
             <span className="material-symbols-outlined primary">insights</span>
           </div>
-          <h2 className="value primary">₹8,122.15</h2>
-          <p className="sub-label">Current open potential gain</p>
+          <h2 className="value primary">{positivePL}</h2>
+          <p className="sub-label">Winning positions total</p>
         </div>
         <div className="summary-card">
           <div className="card-header">
-            <span className="label">Realized P&L</span>
+            <span className="label">Negative P&L</span>
             <span className="material-symbols-outlined secondary">payments</span>
           </div>
-          <h2 className="value secondary">₹6,398.25</h2>
-          <p className="sub-label">Profit booked today</p>
+          <h2 className="value secondary">{negativePL}</h2>
+          <p className="sub-label">Losing positions total</p>
         </div>
         <div className="summary-card">
           <div className="card-header">
@@ -48,7 +88,7 @@ const Positions = () => {
         <div className="table-header">
           <div className="header-left">
             <h3>Active Positions</h3>
-            <span className="count-badge">3 Positions</span>
+            <span className="count-badge">{positionCount} Positions</span>
           </div>
           <div className="header-actions">
             <button className="btn-outline">
@@ -75,7 +115,7 @@ const Positions = () => {
               </tr>
             </thead>
             <tbody>
-              {positions.map((pos, index) => (
+              {allPositions.map((pos, index) => (
                 <tr key={index} className="hover-row">
                   <td>
                     <div className="stock-info">
@@ -104,12 +144,12 @@ const Positions = () => {
         <div className="table-footer-summary">
           <div className="footer-stats">
             <div className="footer-stat">
-              <span className="label">Total Unrealized</span>
-              <span className="value secondary">+₹8,221.75</span>
+              <span className="label">Total Positive</span>
+              <span className="value secondary">{positivePL}</span>
             </div>
             <div className="footer-stat">
-              <span className="label">Total Realized</span>
-              <span className="value secondary">+₹6,298.65</span>
+              <span className="label">Total Negative</span>
+              <span className="value secondary">{negativePL}</span>
             </div>
           </div>
           <button className="btn-exit-all">

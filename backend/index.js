@@ -5,8 +5,37 @@ const app = express();
 
 const mongoose = require('mongoose');
 
+const bodyParser = require('body-parser');
+const cors = require('cors');
+
+const { HoldingModel } = require('./model/HoldingsModel');
+const { PositionModel } = require('./model/PositionModel');
+
 const PORT = process.env.PORT || 3000;
 const URI = process.env.MONGO_URI;
+
+app.use(cors());
+app.use(bodyParser.json());
+
+app.get('/allHoldings', async (req, res) => {
+    try {
+        let allHoldings = await HoldingModel.find({});
+        res.json(allHoldings);
+    } catch (err) {
+        console.error('Error fetching holdings:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.get('/allPositions', async (req, res) => {
+    try {
+        let allPositions = await PositionModel.find({});
+        res.json(allPositions);
+    } catch (err) {
+        console.error('Error fetching positions:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 
 app.listen(PORT, () => {
