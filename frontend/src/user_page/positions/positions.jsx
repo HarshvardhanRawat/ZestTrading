@@ -3,11 +3,13 @@ import axios from "axios";
 
 const Positions = () => {
   const [allPositions, setAllPositions] = useState([]);
+  const [exportSuccess, setExportSuccess] = useState(false);
 
   useEffect(() => {
-    axios.get("http://localhost:3000/allPositions")
+    axios
+      .get("http://localhost:3000/allPositions")
       .then((res) => {
-        setAllPositions(res.data);
+        setAllPositions(res.data || []);
       })
       .catch((err) => {
         console.error("Error fetching positions:", err);
@@ -41,6 +43,41 @@ const Positions = () => {
   const negativePL = formatCurrency(totalNegativePL);
   const totalPL = formatCurrency(totalPositivePL + totalNegativePL);
   const positionCount = allPositions.length;
+
+  // CSV Exporter
+  const handleExport = () => {
+    if (allPositions.length === 0) return;
+
+    const headers = ["Instrument", "Product", "Qty (Net)", "Avg. Price", "LTP", "P&L", "Type"];
+    const rows = allPositions.map((pos) => [
+      pos.name,
+      pos.product,
+      pos.qty,
+      pos.avg,
+      pos.ltp,
+      pos.pl,
+      pos.type,
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row) => row.map((val) => `"${val}"`).join(",")),
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `positions_export_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Show temporary visual confirmation
+    setExportSuccess(true);
+    setTimeout(() => setExportSuccess(false), 3000);
+  };
 
   return (
     <div className="positions-container">
@@ -95,9 +132,11 @@ const Positions = () => {
               <span className="material-symbols-outlined">filter_list</span>
               Filter
             </button>
-            <button className="btn-outline">
-              <span className="material-symbols-outlined">download</span>
-              Export
+            <button className={`btn-outline ${exportSuccess ? "success-flash" : ""}`} onClick={handleExport}>
+              <span className="material-symbols-outlined">
+                {exportSuccess ? "check_circle" : "download"}
+              </span>
+              {exportSuccess ? "Exported!" : "Export"}
             </button>
           </div>
         </div>
@@ -115,29 +154,39 @@ const Positions = () => {
               </tr>
             </thead>
             <tbody>
-              {allPositions.map((pos, index) => (
-                <tr key={index} className="hover-row">
-                  <td>
-                    <div className="stock-info">
-                      <span className="name">{pos.name}</span>
-                      <span className="desc">{pos.desc}</span>
-                    </div>
-                  </td>
-                  <td className="text-center">
-                    <span className={`product-badge ${pos.product.toLowerCase()}`}>{pos.product}</span>
-                  </td>
-                  <td className="text-right font-mono">{pos.qty}</td>
-                  <td className="text-right font-mono">{pos.avg}</td>
-                  <td className={`text-right font-mono ${pos.type}`}>{pos.ltp}</td>
-                  <td className={`text-right font-mono font-bold ${pos.type}`}>{pos.pl}</td>
-                  <td className="text-right">
-                    <div className="action-btns">
-                      <button className="btn-exit">Exit</button>
-                      <button className="btn-convert">Convert</button>
-                    </div>
+              {allPositions.length > 0 ? (
+                allPositions.map((pos, index) => (
+                  <tr key={index} className="hover-row">
+                    <td>
+                      <div className="stock-info">
+                        <span className="name">{pos.name}</span>
+                        <span className="desc">{pos.desc}</span>
+                      </div>
+                    </td>
+                    <td className="text-center">
+                      <span className={`product-badge ${pos.product.toLowerCase()}`}>{pos.product}</span>
+                    </td>
+                    <td className="text-right font-mono">{pos.qty}</td>
+                    <td className="text-right font-mono">{formatCurrency(pos.avg)}</td>
+                    <td className={`text-right font-mono ${pos.type}`}>{formatCurrency(pos.ltp)}</td>
+                    <td className={`text-right font-mono font-bold ${pos.type}`}>
+                      {pos.pl >= 0 ? "+" : ""}{formatCurrency(parsePL(pos.pl))}
+                    </td>
+                    <td className="text-right">
+                      <div className="action-btns">
+                        <button className="btn-exit">Exit</button>
+                        <button className="btn-convert">Convert</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" style={{ textAlign: "center", padding: "2rem", color: "var(--color-on-surface-variant)" }}>
+                    No active positions found
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

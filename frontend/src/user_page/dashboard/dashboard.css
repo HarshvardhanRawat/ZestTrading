@@ -494,7 +494,7 @@
 }
 
 .trend-card {
-  grid-column: span 8;
+  grid-column: span 12;
   background-color: var(--color-surface-container-lowest);
   padding: var(--spacing-md);
   border-radius: var(--radius-xl);
@@ -540,7 +540,7 @@
 }
 
 .chart-placeholder {
-  height: 192px;
+  height: 450px;
   width: 100%;
   position: relative;
 }
@@ -714,8 +714,10 @@
   position: absolute;
   inset: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  text-align: center;
   transform: rotate(90deg);
 }
 
@@ -2310,5 +2312,322 @@
     transform: rotate(360deg);
   }
 }
+
+/* --- Portfolio Analysis & Funds Actions Modals --- */
+.analysis-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+.analysis-modal-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-surface-variant);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 680px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.analysis-modal-card.mini {
+  max-width: 420px;
+}
+
+.analysis-modal-card .modal-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--color-surface-variant);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.analysis-modal-card .modal-header .title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.analysis-modal-card .modal-header .title-wrapper h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.analysis-modal-card .modal-header .close-btn {
+  background: none;
+  border: none;
+  color: var(--color-on-surface-variant);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.analysis-modal-card .modal-header .close-btn:hover {
+  background-color: var(--color-surface-container);
+}
+
+.analysis-modal-card .modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  max-height: 70vh;
+}
+
+.analysis-modal-card .modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--color-surface-variant);
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  background-color: var(--color-surface-container);
+}
+
+/* Analysis Layout Grid */
+.analysis-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 600px) {
+  .analysis-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.analysis-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.analysis-col .label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.summary-block .value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-on-surface);
+  margin: 0;
+}
+
+.risk-tag {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  width: fit-content;
+  margin-bottom: 0.5rem;
+}
+
+.risk-tag.low {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.risk-tag.moderate {
+  background-color: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+  border: 1px solid rgba(234, 179, 8, 0.3);
+}
+
+.risk-tag.high {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.risk-indicator-block .desc {
+  font-size: 0.85rem;
+  color: var(--color-on-surface-variant);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.movers-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.leader-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: var(--color-surface-container);
+  border: 1px solid var(--color-surface-variant);
+}
+
+.leader-item.positive .material-symbols-outlined {
+  color: var(--color-secondary);
+}
+
+.leader-item.negative .material-symbols-outlined {
+  color: var(--color-error);
+}
+
+.leader-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.leader-info .stock {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-on-surface);
+}
+
+.leader-info .value {
+  font-size: 0.8rem;
+  color: var(--color-on-surface-variant);
+}
+
+/* Allocations Progress Bars */
+.allocations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.alloc-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.alloc-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-on-surface);
+}
+
+.alloc-row .bar-bg {
+  height: 6px;
+  background-color: var(--color-surface-container);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.alloc-row .bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease-out;
+}
+
+.analysis-summary-box {
+  background-color: var(--color-surface-container);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid var(--color-surface-variant);
+  margin-top: 0.5rem;
+}
+
+.analysis-summary-box h5 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.analysis-summary-box .metric-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.analysis-summary-box .metric-row:last-child {
+  margin-bottom: 0;
+}
+
+.analysis-summary-box .metric-val {
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.btn-close-modal {
+  padding: 8px 20px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background-color: var(--color-surface-variant);
+  color: var(--color-on-surface);
+  transition: background-color 0.2s;
+}
+
+.btn-close-modal:hover {
+  background-color: var(--color-surface-container);
+}
+
+.btn-close-modal.outline {
+  background: transparent;
+  border: 1px solid var(--color-surface-variant);
+  color: var(--color-on-surface-variant);
+}
+
+.btn-close-modal.outline:hover {
+  background-color: var(--color-surface-container);
+  color: var(--color-on-surface);
+}
+
+.modal-error-message {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Animations */
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalSlideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Toast Success for export button */
+.success-flash {
+  background-color: var(--color-secondary) !important;
+  color: white !important;
+  border-color: var(--color-secondary) !important;
+  transition: all 0.3s ease;
+}
+
 
 

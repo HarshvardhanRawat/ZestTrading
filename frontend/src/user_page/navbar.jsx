@@ -53,12 +53,6 @@ const Navbar = ({ username }) => {
             {theme === 'light' ? 'dark_mode' : 'light_mode'}
           </span>
         </button>
-        <button className="nav-icon-btn">
-          <span className="material-symbols-outlined">notifications</span>
-        </button>
-        <button className="nav-icon-btn">
-          <span className="material-symbols-outlined">settings</span>
-        </button>
         <button className="nav-icon-btn" onClick={handleLogout} title="Logout" style={{ cursor: 'pointer' }}>
           <span className="material-symbols-outlined">logout</span>
         </button>

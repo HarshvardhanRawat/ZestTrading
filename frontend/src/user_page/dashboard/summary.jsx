@@ -1,42 +1,272 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { useTheme } from "../../hooks/useTheme";
+
+const TradingViewChart = ({ isDark }) => {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    containerRef.current.innerHTML = "";
+
+    const widgetId = "tradingview_advanced_chart_widget";
+    const widgetContainer = document.createElement("div");
+    widgetContainer.id = widgetId;
+    widgetContainer.style.height = "100%";
+    widgetContainer.style.width = "100%";
+    containerRef.current.appendChild(widgetContainer);
+
+    const scriptId = "tradingview-tv-script";
+    let script = document.getElementById(scriptId);
+
+    const initWidget = () => {
+      if (window.TradingView) {
+        new window.TradingView.widget({
+          autosize: true,
+          symbol: "NSE:NIFTY",
+          interval: "D",
+          timezone: "Asia/Kolkata",
+          theme: isDark ? "dark" : "light",
+          style: "1",
+          locale: "en",
+          toolbar_bg: isDark ? "#1c1d22" : "#f1f3f6",
+          enable_publishing: false,
+          hide_side_toolbar: true,
+          allow_symbol_change: true,
+          container_id: widgetId,
+        });
+      }
+    };
+
+    if (!script) {
+      script = document.createElement("script");
+      script.id = scriptId;
+      script.src = "https://s3.tradingview.com/tv.js";
+      script.type = "text/javascript";
+      script.async = true;
+      script.onload = initWidget;
+      document.body.appendChild(script);
+    } else {
+      if (window.TradingView) {
+        initWidget();
+      } else {
+        script.addEventListener("load", initWidget);
+      }
+    }
+
+    return () => {
+      if (script) {
+        script.removeEventListener("load", initWidget);
+      }
+    };
+  }, [isDark]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="tradingview-chart-container"
+      style={{ width: "100%", height: "450px" }}
+    />
+  );
+};
+
+const TradingViewNews = ({ isDark }) => {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    containerRef.current.innerHTML = "";
+
+    const widgetContainer = document.createElement("div");
+    widgetContainer.className = "tradingview-widget-container__widget";
+    containerRef.current.appendChild(widgetContainer);
+
+    const script = document.createElement("script");
+    script.src = "https://s3.tradingview.com/external-embedding/embed-widget-timeline.js";
+    script.type = "text/javascript";
+    script.async = true;
+    script.innerHTML = JSON.stringify({
+      feedMode: "market",
+      market: "stock",
+      colorTheme: isDark ? "dark" : "light",
+      isTransparent: true,
+      displayMode: "regular",
+      width: "100%",
+      height: "400",
+      locale: "en",
+    });
+    containerRef.current.appendChild(script);
+  }, [isDark]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="tradingview-widget-container"
+      style={{ width: "100%", height: "400px" }}
+    />
+  );
+};
 
 const Summary = () => {
+  const [theme] = useTheme();
+  const isDark = theme === "dark";
+
+  const [orders, setOrders] = useState([]);
+  const [holdings, setHoldings] = useState([]);
+  const [hoveredSector, setHoveredSector] = useState(null);
+
+  // Fetch orders and holdings
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/allOrders")
+      .then((res) => {
+        setOrders(res.data || []);
+      })
+      .catch((err) => {
+        console.error("Error fetching orders:", err);
+      });
+
+    axios
+      .get("http://localhost:3000/allHoldings")
+      .then((res) => {
+        setHoldings(res.data || []);
+      })
+      .catch((err) => {
+        console.error("Error fetching holdings:", err);
+      });
+  }, []);
+
+  // Map stock to sector
+  const getSector = (name) => {
+    const symbol = String(name || "").toUpperCase();
+    if (["HDFCBANK", "ICICIBANK", "SBIN", "KOTAKBANK", "AXISBANK"].some((s) => symbol.includes(s)))
+      return "Financials";
+    if (["INFY", "TCS", "WIPRO", "HCLTECH", "TECHM"].some((s) => symbol.includes(s)))
+      return "IT / Tech";
+    if (["RELIANCE", "ONGC", "BPCL", "IOC", "GAIL"].some((s) => symbol.includes(s)))
+      return "Energy";
+    if (["TATAMOTORS", "MARUTI", "M&M", "HEROMOTOCO"].some((s) => symbol.includes(s)))
+      return "Automotive";
+    if (["SUNPHARMA", "CIPLA", "DRREDDY", "APOLLOHOSP"].some((s) => symbol.includes(s)))
+      return "Healthcare";
+    return "Other";
+  };
+
+  const getSectorColor = (sectorName) => {
+    switch (sectorName) {
+      case "IT / Tech":
+        return "var(--color-primary)";
+      case "Financials":
+        return "var(--color-secondary)";
+      case "Energy":
+        return "var(--color-error)";
+      case "Automotive":
+        return "#ffd043";
+      case "Healthcare":
+        return "#a855f7";
+      default:
+        return "var(--color-outline)";
+    }
+  };
+
+  // Group holdings by sector
+  const totalCurVal = holdings.reduce((sum, h) => sum + (h.curVal || 0), 0);
+  const sectorMap = {};
+  holdings.forEach((h) => {
+    const s = getSector(h.name);
+    sectorMap[s] = (sectorMap[s] || 0) + (h.curVal || 0);
+  });
+
+  const sectorsList = Object.keys(sectorMap).map((sector) => {
+    const val = sectorMap[sector];
+    const pct = totalCurVal > 0 ? Math.round((val / totalCurVal) * 100) : 0;
+    return { name: sector, val, pct };
+  }).sort((a, b) => b.val - a.val);
+
+  // Fallback for pie chart if no holdings
+  const fallbackSectors = [
+    { name: "Financials", pct: 40, val: 592996.26 },
+    { name: "IT / Tech", pct: 30, val: 444747.20 },
+    { name: "Energy", pct: 20, val: 296498.13 },
+    { name: "Other", pct: 10, val: 148249.07 },
+  ];
+
+  const activeSectors = sectorsList.length > 0 ? sectorsList : fallbackSectors;
+  const activeTotalVal = totalCurVal > 0 ? totalCurVal : 1482490.65;
+
+  // Calculate cumulative percentage for pie slices
+  let cumulativePercent = 0;
+
+  // Display top 3 recent orders
+  const displayOrders = orders.slice(-3).reverse();
+
+  // Dynamic portfolio analytics display
+  const portfolioDisplayValue = activeTotalVal.toLocaleString("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 2,
+  });
+
   return (
     <div className="summary-container">
-      {/* Portfolio Hero Card */}
+      {/* Portfolio & Stats Row */}
       <section className="portfolio-section">
         <div className="portfolio-card">
           <div className="card-decoration-1"></div>
           <div className="card-decoration-2"></div>
           <span className="card-label">Portfolio Value</span>
-          <h2 className="portfolio-amount">₹ 14,82,490.65</h2>
+          <h2 className="portfolio-amount">{portfolioDisplayValue}</h2>
           <div className="portfolio-change">
             <span className="material-symbols-outlined">trending_up</span>
             <span className="change-text">+₹ 12,450.00 (0.84%) Today</span>
           </div>
         </div>
+
+        {/* Margin Status Card */}
+        <div className="portfolio-card margin-status-card" style={{ backgroundColor: "var(--color-surface-container-high)", color: "var(--color-on-surface)", border: "1px solid var(--color-outline-variant)" }}>
+          <div className="card-decoration-1"></div>
+          <div className="card-decoration-2"></div>
+          <span className="card-label" style={{ color: "var(--color-on-surface-variant)" }}>Available Margin</span>
+          <h2 className="portfolio-amount" style={{ color: "var(--color-on-surface)" }}>
+            {parseFloat(localStorage.getItem("zest_margin_balance") || 482910.45).toLocaleString("en-IN", {
+              style: "currency",
+              currency: "INR",
+            })}
+          </h2>
+          <div className="portfolio-change">
+            <span className="material-symbols-outlined" style={{ color: "var(--color-secondary)" }}>account_balance_wallet</span>
+            <span className="change-text" style={{ color: "var(--color-on-surface-variant)", fontFamily: "inherit" }}>
+              Used Margin: {parseFloat(localStorage.getItem("zest_used_margin") || 120400).toLocaleString("en-IN", {
+                style: "currency",
+                currency: "INR",
+              })}
+            </span>
+          </div>
+        </div>
+
+        {/* Positions Overview Card */}
+        <div className="portfolio-card positions-status-card" style={{ backgroundColor: "var(--color-surface-container-high)", color: "var(--color-on-surface)", border: "1px solid var(--color-outline-variant)" }}>
+          <div className="card-decoration-1"></div>
+          <div className="card-decoration-2"></div>
+          <span className="card-label" style={{ color: "var(--color-on-surface-variant)" }}>Active Holdings</span>
+          <h2 className="portfolio-amount" style={{ color: "var(--color-on-surface)" }}>
+            {holdings.length || 3} Stocks
+          </h2>
+          <div className="portfolio-change">
+            <span className="material-symbols-outlined" style={{ color: "var(--color-primary)" }}>insights</span>
+            <span className="change-text" style={{ color: "var(--color-on-surface-variant)", fontFamily: "inherit" }}>
+              Total Orders Today: {orders.length || 2}
+            </span>
+          </div>
+        </div>
+
         <div className="trend-card">
           <div className="card-header">
             <h3>Trend Overview</h3>
-            <div className="time-filters">
-              <button className="active">1D</button>
-              <button>1W</button>
-              <button>1M</button>
-              <button>1Y</button>
-            </div>
           </div>
-          <div className="chart-placeholder">
-            <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-              <defs>
-                <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" style={{ stopColor: "var(--color-secondary)", stopOpacity: 0.2 }} />
-                  <stop offset="100%" style={{ stopColor: "var(--color-secondary)", stopOpacity: 0 }} />
-                </linearGradient>
-              </defs>
-              <path d="M0,80 Q10,75 20,85 T40,60 T60,70 T80,30 T100,40 L100,100 L0,100 Z" fill="url(#chartGradient)" />
-              <path d="M0,80 Q10,75 20,85 T40,60 T60,70 T80,30 T100,40" fill="none" stroke="var(--color-secondary)" strokeWidth="2" />
-            </svg>
-            <div className="placeholder-text">Interactive Chart Area Placeholder</div>
+          <div className="chart-placeholder" style={{ padding: "0" }}>
+            <TradingViewChart isDark={isDark} />
           </div>
         </div>
       </section>
@@ -47,7 +277,6 @@ const Summary = () => {
         <div className="widget-card">
           <div className="widget-header">
             <h3>Market Overview</h3>
-            <span className="material-symbols-outlined icon-btn">more_horiz</span>
           </div>
           <div className="market-list">
             <div className="market-item">
@@ -87,7 +316,9 @@ const Summary = () => {
         <div className="widget-card">
           <div className="widget-header">
             <h3>Recent Orders</h3>
-            <a href="#" className="view-all">View All</a>
+            <Link to="/dashboard/orders" className="view-all">
+              View All
+            </Link>
           </div>
           <table className="orders-table">
             <thead>
@@ -98,26 +329,30 @@ const Summary = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>
-                  <div className="stock-name">HDFCBANK</div>
-                  <div className="stock-qty">Qty: 50</div>
-                </td>
-                <td>
-                  <span className="badge buy">BUY</span>
-                </td>
-                <td className="text-right status executed">Executed</td>
-              </tr>
-              <tr>
-                <td>
-                  <div className="stock-name">INFY</div>
-                  <div className="stock-qty">Qty: 25</div>
-                </td>
-                <td>
-                  <span className="badge sell">SELL</span>
-                </td>
-                <td className="text-right status pending">Pending</td>
-              </tr>
+              {displayOrders.length > 0 ? (
+                displayOrders.map((order, index) => (
+                  <tr key={index}>
+                    <td>
+                      <div className="stock-name">{order.instrument}</div>
+                      <div className="stock-qty">Qty: {order.qty}</div>
+                    </td>
+                    <td>
+                      <span className={`badge ${order.typeClass || (order.type === "BUY" ? "buy" : "sell")}`}>
+                        {order.type}
+                      </span>
+                    </td>
+                    <td className={`text-right status ${order.statusClass || order.status.toLowerCase()}`}>
+                      {order.status}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="3" style={{ textAlign: "center", padding: "1.5rem", color: "var(--color-on-surface-variant)" }}>
+                    No recent orders placed
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -130,33 +365,83 @@ const Summary = () => {
           </div>
           <div className="distribution-content">
             <div className="donut-chart">
-              <svg viewBox="0 0 36 36">
-                <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="var(--color-surface-variant)" strokeWidth="3" />
-                <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="var(--color-primary)" strokeWidth="3" strokeDasharray="40 100" />
-                <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="var(--color-secondary)" strokeWidth="3" strokeDasharray="30 100" strokeDashoffset="-40" />
-                <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="var(--color-error)" strokeWidth="3" strokeDasharray="20 100" strokeDashoffset="-70" />
+              <svg viewBox="0 0 36 36" style={{ width: "100%", height: "100%" }}>
+                {/* Background Ring */}
+                <circle
+                  cx="18"
+                  cy="18"
+                  r="15.95"
+                  fill="transparent"
+                  stroke="var(--color-surface-container)"
+                  strokeWidth="3.2"
+                />
+                {/* Slices */}
+                {activeSectors.map((sector, idx) => {
+                  const dashArray = `${sector.pct} 100`;
+                  const dashOffset = -cumulativePercent;
+                  cumulativePercent += sector.pct;
+
+                  const isHovered = hoveredSector && hoveredSector.name === sector.name;
+
+                  return (
+                    <circle
+                      key={idx}
+                      cx="18"
+                      cy="18"
+                      r="15.95"
+                      fill="transparent"
+                      stroke={getSectorColor(sector.name)}
+                      strokeWidth={isHovered ? "4.5" : "3.2"}
+                      strokeDasharray={dashArray}
+                      strokeDashoffset={dashOffset}
+                      style={{ transition: "stroke-width 0.2s ease, stroke 0.2s ease", cursor: "pointer" }}
+                      onMouseEnter={() => setHoveredSector(sector)}
+                      onMouseLeave={() => setHoveredSector(null)}
+                    />
+                  );
+                })}
               </svg>
-              <div className="chart-center">
-                <span className="percentage">74%</span>
+              <div
+                className="chart-center"
+                style={{
+                  pointerEvents: "none"
+                }}
+              >
+                <span className="percentage" style={{ fontSize: hoveredSector ? "16px" : "20px", fontWeight: "700" }}>
+                  {hoveredSector ? `${hoveredSector.pct}%` : `${activeSectors[0]?.pct || 0}%`}
+                </span>
+                <span className="label" style={{ fontSize: "9px", textTransform: "uppercase", color: "var(--color-on-surface-variant)" }}>
+                  {hoveredSector ? hoveredSector.name : (activeSectors[0]?.name || "Sectors")}
+                </span>
               </div>
             </div>
             <div className="legend-grid">
-              <div className="legend-item">
-                <div className="dot primary"></div>
-                <span>Financials (40%)</span>
-              </div>
-              <div className="legend-item">
-                <div className="dot secondary"></div>
-                <span>IT (30%)</span>
-              </div>
-              <div className="legend-item">
-                <div className="dot tertiary"></div>
-                <span>Energy (20%)</span>
-              </div>
-              <div className="legend-item">
-                <div className="dot surface"></div>
-                <span>Other (10%)</span>
-              </div>
+              {activeSectors.map((sector, idx) => (
+                <div
+                  key={idx}
+                  className="legend-item"
+                  style={{
+                    cursor: "pointer",
+                    opacity: hoveredSector && hoveredSector.name !== sector.name ? 0.5 : 1,
+                    transition: "opacity 0.2s ease",
+                  }}
+                  onMouseEnter={() => setHoveredSector(sector)}
+                  onMouseLeave={() => setHoveredSector(null)}
+                >
+                  <div
+                    className="dot"
+                    style={{
+                      backgroundColor: getSectorColor(sector.name),
+                      width: "8px",
+                      height: "8px",
+                      borderRadius: "50%",
+                    }}
+                  ></div>
+                  <span>
+                    {sector.name} ({sector.pct}%)
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -165,29 +450,8 @@ const Summary = () => {
       {/* Market Intelligence */}
       <section className="intelligence-section">
         <h3 className="section-title">Market Intelligence</h3>
-        <div className="intelligence-grid">
-          <div className="featured-news">
-            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXH4ASzny0iwElzEWR1_zi-qcRwGod6gcTKfN2inwGieTbNct459tQau2DCiPOWIaaHa1QWs4y76kCfIaNiT1ANBd9D27403NtfihtlwmCWS4D3g6mRrbKie7Tp1FDPZU2Q3U7xZETioXtX5MAHl7g3jDYqqZlMVcZ2g2mw8f-olk6qj_w92dTi8MBa5xj2oMlbKD9OgxKHl3cAc-6ioAmQI2Bh7zdo3e7w1ZEXjR3GI1xUEKH8MDV-ZQiSg_XDDKxXHsNGYuIAUs" alt="Market Analysis" />
-            <div className="news-overlay">
-              <span className="featured-badge">FEATURED</span>
-              <h4>RBI Monetary Policy: What to expect in the upcoming session?</h4>
-              <p>Analyzing the impact of potential repo rate shifts on banking sector stocks.</p>
-            </div>
-          </div>
-          <div className="news-card">
-            <p className="card-tag primary">ANALYST VIEW</p>
-            <h4>Tech sector outlook remains bullish despite global headwinds.</h4>
-            <button className="read-more">
-              Read Report <span className="material-symbols-outlined">arrow_forward</span>
-            </button>
-          </div>
-          <div className="news-card">
-            <p className="card-tag secondary">IPO WATCH</p>
-            <h4>Three new listings to watch for in the coming week.</h4>
-            <button className="read-more">
-              Learn More <span className="material-symbols-outlined">arrow_forward</span>
-            </button>
-          </div>
+        <div className="intelligence-grid-full" style={{ marginTop: "1rem" }}>
+          <TradingViewNews isDark={isDark} />
         </div>
       </section>
     </div>
