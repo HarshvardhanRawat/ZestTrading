@@ -10,6 +10,7 @@ const cors = require('cors');
 
 const { HoldingModel } = require('./model/HoldingsModel');
 const { PositionModel } = require('./model/PositionModel');
+const { WatchlistModel } = require('./model/WatchlistModel');
 
 const PORT = process.env.PORT || 3000;
 const URI = process.env.MONGO_URI;
@@ -37,13 +38,23 @@ app.get('/allPositions', async (req, res) => {
     }
 });
 
+app.get('/allWatchlist', async (req, res) => {
+    try {
+        let allWatchlist = await WatchlistModel.find({});
+        res.json(allWatchlist);
+    } catch (err) {
+        console.error('Error fetching watchlist:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 app.listen(PORT, () => {
-    try{
+    try {
         console.log(`Server is running on port ${PORT}`);
         mongoose.connect(URI);
         console.log('Connected to MongoDB');
-    }catch(err){
+    } catch (err) {
         console.error('Error connecting to MongoDB:', err);
     }
 });

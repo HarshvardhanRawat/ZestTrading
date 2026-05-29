@@ -1,10 +1,29 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import logoImg from '../assets/Zest_logoT.png';
-import { watchlist } from "../data/data.js";
+
+import axios from "axios";
+import BuyActionWindow from "../components/buyActionWindow";
+
+// import { watchlist } from "../data/data.js";
 
 const Sidebar = () => {
   const location = useLocation();
+
+  const [allWatchlist, setAllWatchlist] = useState([]);
+  const [selectedStockForBuy, setSelectedStockForBuy] = useState(null);
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/allWatchlist')
+      .then(res => {
+        setAllWatchlist(res.data);
+      })
+      .catch(err => {
+        console.error('Error fetching watchlist:', err);
+      });
+  }, []);
+
+
 
   const navItems = [
     { label: "Dashboard", icon: "dashboard", path: "/dashboard" },
@@ -40,11 +59,26 @@ const Sidebar = () => {
           <span>WATCHLIST</span>
           <span className="material-symbols-outlined search-icon">search</span>
         </div>
-        
+
         <div className="watchlist-items">
-          {watchlist.map((item) => {
+          {allWatchlist.map((item) => {
+            if (!item) return null;
             const changeClass = item.isDown ? 'negative' : 'positive';
-            const cleanedPercent = item.percent.replace('+', '');
+            
+            let cleanedPercent = '0.00%';
+            if (item.percent !== undefined && item.percent !== null) {
+              if (typeof item.percent === 'number') {
+                cleanedPercent = `${Math.abs(item.percent).toFixed(2)}%`;
+              } else if (typeof item.percent === 'string') {
+                const rawPercent = item.percent.replace('+', '').replace('-', '');
+                cleanedPercent = rawPercent.endsWith('%') ? rawPercent : `${rawPercent}%`;
+              }
+            }
+
+            const displayPrice = typeof item.price === 'number'
+              ? item.price.toFixed(2)
+              : (item.price && !isNaN(parseFloat(item.price)) ? parseFloat(item.price).toFixed(2) : '0.00');
+
             return (
               <div className={`watchlist-item ${changeClass}`} key={item.id}>
                 <div className="item-info">
@@ -52,13 +86,17 @@ const Sidebar = () => {
                   <span className="item-exchange">{item.exchange}</span>
                 </div>
                 <div className="item-price">
-                  <span className="price">{item.price.toFixed(2)}</span>
+                  <span className="price">{displayPrice}</span>
                   <span className={`change ${changeClass}`}>
-                    {item.isDown ? '' : '+'}{cleanedPercent}
+                    {item.isDown ? '-' : '+'}{cleanedPercent}
                   </span>
                 </div>
                 <div className="watchlist-item-actions">
-                  <button className="action-btn buy" type="button">
+                  <button 
+                    className="action-btn buy" 
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); setSelectedStockForBuy(item); }}
+                  >
                     <span className="material-symbols-outlined">shopping_cart</span>
                     Buy
                   </button>
@@ -103,6 +141,12 @@ const Sidebar = () => {
           History
         </Link>
       </nav>
+      {selectedStockForBuy && (
+        <BuyActionWindow 
+          stock={selectedStockForBuy} 
+          onClose={() => setSelectedStockForBuy(null)} 
+        />
+      )}
     </aside>
   );
 };
