@@ -1,63 +1,18 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const Orders = () => {
-  const orders = [
-    {
-      instrument: "RELIANCE",
-      exchange: "NSE",
-      type: "BUY",
-      qty: "50 / 50",
-      price: "2,985.00",
-      status: "Pending",
-      time: "10:45:12",
-      typeClass: "buy",
-      statusClass: "pending",
-    },
-    {
-      instrument: "TCS",
-      exchange: "NSE",
-      type: "SELL",
-      qty: "10 / 10",
-      price: "4,125.40",
-      status: "Executed",
-      time: "10:30:05",
-      typeClass: "sell",
-      statusClass: "executed",
-    },
-    {
-      instrument: "HDFCBANK",
-      exchange: "NSE",
-      type: "BUY",
-      qty: "0 / 25",
-      price: "1,452.00",
-      status: "Cancelled",
-      time: "09:55:42",
-      typeClass: "buy",
-      statusClass: "cancelled",
-    },
-    {
-      instrument: "INFY",
-      exchange: "NSE",
-      type: "BUY",
-      qty: "100 / 100",
-      price: "1,640.25",
-      status: "Executed",
-      time: "09:22:15",
-      typeClass: "buy",
-      statusClass: "executed",
-    },
-    {
-      instrument: "ZOMATO",
-      exchange: "NSE",
-      type: "SELL",
-      qty: "1000 / 1000",
-      price: "164.50",
-      status: "Executed",
-      time: "09:15:30",
-      typeClass: "sell",
-      statusClass: "executed",
-    },
-  ];
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    axios.get("http://localhost:3000/allOrders")
+      .then((res) => {
+        setOrders(res.data);
+      })
+      .catch((err) => {
+        console.error("Error fetching orders:", err);
+      });
+  }, []);
 
   return (
     <div className="orders-container">
@@ -146,7 +101,7 @@ const Orders = () => {
           </tbody>
         </table>
         <div className="table-footer">
-          <span>Showing 5 of 12 orders</span>
+          <span>Showing {orders.length} orders</span>
           <div className="pagination">
             <button><span className="material-symbols-outlined">chevron_left</span></button>
             <button><span className="material-symbols-outlined">chevron_right</span></button>

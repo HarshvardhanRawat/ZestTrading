@@ -11,6 +11,7 @@ const cors = require('cors');
 const { HoldingModel } = require('./model/HoldingsModel');
 const { PositionModel } = require('./model/PositionModel');
 const { WatchlistModel } = require('./model/WatchlistModel');
+const { OrderModel } = require('./model/OrdersModel');
 
 const PORT = process.env.PORT || 3000;
 const URI = process.env.MONGO_URI;
@@ -48,6 +49,37 @@ app.get('/allWatchlist', async (req, res) => {
     }
 });
 
+app.get('/allOrders', async (req, res) => {
+    try {
+        let allOrders = await OrderModel.find({});
+        res.json(allOrders);
+    } catch (err) {
+        console.error('Error fetching orders:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.post('/newOrder', (req, res) => {
+    try {
+        let newOrder = new OrderModel({
+            instrument: req.body.instrument,
+            exchange: req.body.exchange,
+            type: req.body.type,
+            qty: req.body.qty,
+            price: req.body.price,
+            status: req.body.status,
+            time: req.body.time,
+            typeClass: req.body.typeClass,
+            statusClass: req.body.statusClass,
+        });
+        newOrder.save();
+        res.send("Order placed successfully");
+    } catch (err) {
+        console.error('Error placing order:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+})
 
 app.listen(PORT, () => {
     try {
