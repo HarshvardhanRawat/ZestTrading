@@ -15,7 +15,8 @@ function Navbar() {
           <Link className="nav-link" to="/about">About</Link>
           <Link className="nav-link" to="/support">Support</Link>
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center" style={{ gap: "20px" }}>
+          <Link to="/login" style={{ color: "var(--color-on-surface-variant)", textDecoration: "none", fontWeight: "600" }} className="hover-underline">Log In</Link>
           <Link to="/signup"><button className="btn btn-primary label-md">Signup</button></Link>
         </div>
       </div>

@@ -1,5 +1,6 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import axios from "axios";
 import Sidebar from "../sidebar";
 import Navbar from "../navbar";
 import Summary from "./summary";
@@ -10,11 +11,48 @@ import Funds from "../funds/funds";
 import "./dashboard.css";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [username, setUsername] = useState("User");
+
+  useEffect(() => {
+    const verifyUser = async () => {
+      try {
+        const { data } = await axios.post(
+          "http://localhost:3000/verify",
+          {},
+          { withCredentials: true }
+        );
+        if (data.status) {
+          setUsername(data.user);
+          setLoading(false);
+        } else {
+          localStorage.removeItem("username");
+          navigate("/login");
+        }
+      } catch (err) {
+        console.error("Auth verification failed:", err);
+        localStorage.removeItem("username");
+        navigate("/login");
+      }
+    };
+    verifyUser();
+  }, [navigate]);
+
+  if (loading) {
+    return (
+      <div className="auth-loading-screen">
+        <div className="spinner-large"></div>
+        <div className="loading-text">Verifying secure session...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard-wrapper">
       <Sidebar />
       <main className="dashboard-content">
-        <Navbar />
+        <Navbar username={username} />
         <div className="content-scrollable">
           <Routes>
             <Route path="/" element={<Summary />} />

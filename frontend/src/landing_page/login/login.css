@@ -1,0 +1,6 @@
+@import '../signup/signup.css';
+
+/* Override/Login-specific adjustments */
+.login-form-card {
+  composes: signup-form-card;
+}
