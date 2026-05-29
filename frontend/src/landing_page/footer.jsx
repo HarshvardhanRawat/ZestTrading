@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 function Footer() {
   return (
@@ -12,7 +13,7 @@ function Footer() {
         <div>
           <h4 className="body-lg text-on-background mb-4" style={{ fontWeight: 600 }}>Company</h4>
           <ul style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-            <li><a className="nav-link" href="#">About Us</a></li>
+            <li><Link className="nav-link" to="/about">About Us</Link></li>
             <li><a className="nav-link" href="#">Careers</a></li>
             <li><a className="nav-link" href="#">Press</a></li>
           </ul>
@@ -20,16 +21,16 @@ function Footer() {
         <div>
           <h4 className="body-lg text-on-background mb-4" style={{ fontWeight: 600 }}>Products</h4>
           <ul style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-            <li><a className="nav-link" href="#">Zest Pro</a></li>
-            <li><a className="nav-link" href="#">Zest Invest</a></li>
+            <li><Link className="nav-link" to="/product">Zest Pro</Link></li>
+            <li><Link className="nav-link" to="/product">Zest Invest</Link></li>
             <li><a className="nav-link" href="#">API</a></li>
           </ul>
         </div>
         <div>
           <h4 className="body-lg text-on-background mb-4" style={{ fontWeight: 600 }}>Support</h4>
           <ul style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-            <li><a className="nav-link" href="#">Help Center</a></li>
-            <li><a className="nav-link" href="#">Contact Us</a></li>
+            <li><Link className="nav-link" to="/support">Help Center</Link></li>
+            <li><Link className="nav-link" to="/support">Contact Us</Link></li>
             <li><a className="nav-link" href="#">Trust &amp; Safety</a></li>
           </ul>
         </div>

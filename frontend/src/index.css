@@ -49,7 +49,109 @@
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
   --radius-full: 9999px;
+
+  /* Theme Defaults */
+  --body-bg: linear-gradient(180deg, #f7fbff 0%, #eef3fa 100%);
+  --navbar-bg: rgba(255, 255, 255, 0.95);
+  --navbar-border: rgba(226, 226, 229, 0.95);
+  --theme-toggle-color: var(--color-on-surface-variant);
+
+  /* Support Page Vars */
+  --support-hero-bg: rgba(241, 248, 255, 0.98);
+  --support-card-bg: rgba(255, 255, 255, 0.92);
+  --support-card-border: rgba(255, 255, 255, 0.85);
+  --support-ticket-section-bg: linear-gradient(180deg, rgba(245, 250, 255, 0.95), rgba(255, 255, 255, 0.98));
+  --support-ticket-card-bg: rgba(255, 255, 255, 0.94);
+  --support-panel-card-bg: rgba(255, 255, 255, 0.96);
+  --support-panel-accent-bg: linear-gradient(180deg, rgba(233, 241, 255, 0.95), rgba(255, 255, 255, 0.92));
+
+  /* Pricing Page Vars */
+  --pricing-hero-bg: rgba(255, 255, 255, 0.98);
+  --pricing-card-bg: rgba(255, 255, 255, 0.7);
+  --pricing-popular-card-bg: rgba(255, 255, 255, 0.85);
+  --pricing-card-border: rgba(255, 255, 255, 0.5);
+  --pricing-th-bg: rgba(244, 247, 255, 0.95);
+  --pricing-tr-odd-bg: rgba(255, 255, 255, 0.9);
+  --pricing-tr-even-bg: rgba(244, 248, 255, 0.7);
+  --pricing-tr-hover-bg: rgba(232, 242, 255, 0.9);
 }
+
+:root[data-theme='dark'] {
+  /* Colors */
+  --color-surface: #121316;
+  --color-surface-dim: #1a1b1f;
+  --color-surface-container-lowest: #0e0f11;
+  --color-surface-container: #1c1d22;
+  --color-on-surface: #e2e2e5;
+  --color-on-surface-variant: #a8b0c0;
+  --color-outline: #8c909c;
+  --color-primary: #a8c7ff;
+  --color-on-primary: #003062;
+  --color-primary-fixed: #004786;
+  --color-secondary: #7cdb73;
+  --color-background: #121316;
+  --color-on-background: #e2e2e5;
+  --color-surface-variant: #414751;
+  --color-error: #ffb4ab;
+  
+  /* Additional Colors for Signup */
+  --color-primary-container: #004786;
+  --color-on-primary-container: #d4e3ff;
+  --color-tertiary-container: #93000a;
+  --color-inverse-surface: #e2e2e5;
+  --color-surface-container-low: #18191d;
+  --color-outline-variant: #414751;
+
+  /* Theme overrides */
+  --body-bg: linear-gradient(180deg, #121316 0%, #0e0f11 100%);
+  --navbar-bg: rgba(18, 19, 22, 0.95);
+  --navbar-border: rgba(65, 71, 81, 0.4);
+  --theme-toggle-color: #ffd043;
+
+  /* Support Page Overrides */
+  --support-hero-bg: rgba(18, 19, 22, 0.98);
+  --support-card-bg: rgba(28, 29, 34, 0.92);
+  --support-card-border: rgba(65, 71, 81, 0.4);
+  --support-ticket-section-bg: linear-gradient(180deg, rgba(14, 15, 17, 0.95), rgba(18, 19, 22, 0.98));
+  --support-ticket-card-bg: rgba(28, 29, 34, 0.94);
+  --support-panel-card-bg: rgba(28, 29, 34, 0.96);
+  --support-panel-accent-bg: linear-gradient(180deg, rgba(34, 40, 48, 0.95), rgba(18, 19, 22, 0.92));
+
+  /* Pricing Page Overrides */
+  --pricing-hero-bg: rgba(18, 19, 22, 0.98);
+  --pricing-card-bg: rgba(28, 29, 34, 0.7);
+  --pricing-popular-card-bg: rgba(38, 40, 48, 0.85);
+  --pricing-card-border: rgba(65, 71, 81, 0.4);
+  --pricing-th-bg: rgba(38, 40, 48, 0.95);
+  --pricing-tr-odd-bg: rgba(28, 29, 34, 0.9);
+  --pricing-tr-even-bg: rgba(18, 19, 22, 0.7);
+  --pricing-tr-hover-bg: rgba(0, 92, 171, 0.16);
+}
+
+/* Theme Toggle Button Styles */
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  color: var(--theme-toggle-color);
+  background-color: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.theme-toggle-btn:hover {
+  background-color: var(--color-surface-container);
+  transform: scale(1.05);
+}
+
+.theme-toggle-btn .material-symbols-outlined {
+  font-size: 24px;
+}
+
 
 /* Reset & Base */
 *, *::before, *::after {
@@ -60,7 +162,7 @@
 
 body {
   font-family: var(--font-sans);
-  background: linear-gradient(180deg, #f7fbff 0%, #eef3fa 100%);
+  background: var(--body-bg);
   color: var(--color-on-background);
   font-size: 15px;
   line-height: 1.65;
@@ -267,9 +369,9 @@ img {
   top: 0;
   width: 100%;
   z-index: 50;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: var(--navbar-bg);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(226, 226, 229, 0.95);
+  border-bottom: 1px solid var(--navbar-border);
   height: 64px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }

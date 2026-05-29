@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useTheme } from "../hooks/useTheme";
 
 const Navbar = ({ username }) => {
+  const [theme, toggleTheme] = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -46,6 +48,11 @@ const Navbar = ({ username }) => {
         </nav>
       </div>
       <div className="nav-right">
+        <button className="nav-icon-btn" onClick={toggleTheme} title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`} style={{ cursor: 'pointer' }}>
+          <span className="material-symbols-outlined">
+            {theme === 'light' ? 'dark_mode' : 'light_mode'}
+          </span>
+        </button>
         <button className="nav-icon-btn">
           <span className="material-symbols-outlined">notifications</span>
         </button>

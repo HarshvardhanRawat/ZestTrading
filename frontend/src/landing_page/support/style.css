@@ -1,14 +1,14 @@
 /* d:\.projects\Zest\frontend\src\landing_page\support\style.css */
 
 .support-hero {
-  background: radial-gradient(circle at top left, rgba(45, 118, 200, 0.16), transparent 30%), linear-gradient(135deg, rgba(4, 107, 204, 0.08), rgba(241, 248, 255, 0.98));
-  padding-top: 6rem;
-  padding-bottom: 5rem;
+  background: radial-gradient(circle at top left, rgba(45, 118, 200, 0.16), transparent 30%), linear-gradient(135deg, rgba(4, 107, 204, 0.08), var(--support-hero-bg));
+  padding-top: 9rem;
+  padding-bottom: 7rem;
 }
 
 .support-hero-grid {
   display: grid;
-  gap: 2.5rem;
+  gap: 4.5rem;
   align-items: center;
 }
 
@@ -96,9 +96,9 @@
 }
 
 .support-search-card {
-  padding: 2rem;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.85);
+  padding: 3rem;
+  background: var(--support-card-bg);
+  border: 1px solid var(--support-card-border);
   box-shadow: 0 40px 90px rgba(14, 62, 114, 0.12);
   backdrop-filter: blur(12px);
 }
@@ -117,13 +117,13 @@
 
 .support-search-input {
   width: 100%;
-  border: 1px solid rgba(226, 226, 229, 0.95);
+  border: 1px solid var(--color-surface-variant);
   border-radius: var(--radius-xl);
   padding: 1rem 1rem 1rem 3.75rem;
   background-color: var(--color-surface-container-lowest);
   color: var(--color-on-surface);
   font-size: 1rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .support-search-input:focus {
@@ -166,22 +166,24 @@
 }
 
 .support-stat-card {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(242, 246, 255, 0.95));
-  border: 1px solid rgba(226, 226, 229, 0.8);
+  background: var(--support-card-bg);
+  border: 1px solid var(--support-card-border);
   border-radius: var(--radius-xl);
-  padding: 1.4rem 1.25rem;
+  padding: 1.75rem 1.5rem;
   display: grid;
-  gap: 0.35rem;
+  gap: 0.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
 }
 
 .stat-value {
-  font-size: 1.85rem;
+  font-size: 2.25rem;
   font-weight: 800;
-  color: var(--color-on-surface);
+  color: var(--color-primary);
 }
 
 .stat-label {
   color: var(--color-on-surface-variant);
+  font-size: 0.9rem;
 }
 
 .support-hero-lead {
@@ -222,20 +224,20 @@
 }
 
 .support-category-card {
-  padding: 1.75rem;
+  padding: 2.5rem 2rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  background-color: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(226, 226, 229, 0.75);
+  gap: 1.25rem;
+  background-color: var(--support-card-bg);
+  border: 1px solid var(--support-card-border);
   border-radius: var(--radius-2xl);
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .support-category-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(0, 92, 171, 0.4);
-  box-shadow: 0 32px 80px rgba(0, 92, 171, 0.1);
+  transform: translateY(-6px);
+  border-color: var(--color-primary);
+  box-shadow: 0 25px 50px rgba(0, 92, 171, 0.08);
 }
 
 .support-category-icon {
@@ -247,15 +249,15 @@
 }
 
 .support-ticket-section {
-  background: linear-gradient(180deg, rgba(245, 250, 255, 0.95), rgba(255, 255, 255, 0.98));
-  padding-top: 4rem;
-  padding-bottom: 5rem;
+  background: var(--support-ticket-section-bg);
+  padding-top: 7rem;
+  padding-bottom: 8rem;
 }
 
 .support-ticket-card {
-  padding: 2.25rem;
-  border: 1px solid rgba(226, 226, 229, 0.8);
-  background-color: rgba(255, 255, 255, 0.94);
+  padding: 3.5rem;
+  border: 1px solid var(--support-card-border);
+  background-color: var(--support-ticket-card-bg);
   box-shadow: 0 35px 90px rgba(20, 60, 120, 0.08);
 }
 
@@ -282,24 +284,24 @@
 
 .form-input {
   width: 100%;
-  background-color: var(--color-surface);
-  border: 1px solid rgba(226, 226, 229, 0.9);
-  border-radius: var(--radius-2xl);
-  padding: 1rem 1.2rem;
+  background-color: var(--color-surface-container-lowest);
+  border: 1px solid var(--color-surface-variant);
+  border-radius: var(--radius-xl);
+  padding: 1.15rem 1.35rem;
   color: var(--color-on-surface);
   font-size: 1rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.form-input:hover,
-.form-input:focus {
-  transform: translateY(-1px);
+.form-input:hover {
+  border-color: var(--color-primary);
 }
 
 .form-input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 1px rgba(0, 92, 171, 0.18);
+  box-shadow: 0 0 0 4px rgba(0, 92, 171, 0.12);
+  background-color: var(--color-surface);
 }
 
 .support-textarea {
@@ -351,13 +353,13 @@
 
 .support-panel-card {
   padding: 1.75rem;
-  border: 1px solid rgba(226, 226, 229, 0.75);
-  background-color: rgba(255, 255, 255, 0.96);
+  border: 1px solid var(--support-card-border);
+  background-color: var(--support-panel-card-bg);
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.05);
 }
 
 .support-panel-accent {
-  background: linear-gradient(180deg, rgba(233, 241, 255, 0.95), rgba(255, 255, 255, 0.92));
+  background: var(--support-panel-accent-bg);
 }
 
 .support-solution-card {
@@ -447,4 +449,20 @@
   .support-categories-header {
     gap: 1rem;
   }
+}
+
+/* Color overrides for theme compliance */
+.support-hero h1,
+.support-hero h2,
+.support-hero h3,
+.support-hero h4,
+.support-ticket-section h1,
+.support-ticket-section h2,
+.support-ticket-section h3,
+.support-ticket-section h4,
+.support-categories h1,
+.support-categories h2,
+.support-categories h3,
+.support-categories h4 {
+  color: var(--color-on-surface);
 }

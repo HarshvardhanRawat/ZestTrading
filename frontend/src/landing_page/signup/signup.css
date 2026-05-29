@@ -4,7 +4,7 @@
   flex-direction: column;
   background: radial-gradient(circle at top left, rgba(45, 118, 200, 0.12), transparent 30%),
     radial-gradient(circle at bottom right, rgba(0, 92, 171, 0.12), transparent 30%),
-    #f7fbff;
+    var(--color-background);
 }
 
 .signup-main {
