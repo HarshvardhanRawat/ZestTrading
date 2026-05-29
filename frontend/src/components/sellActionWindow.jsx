@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const BuyActionWindow = ({ stock, onClose }) => {
+const SellActionWindow = ({ stock, onClose }) => {
   if (!stock) return null;
 
   const [qty, setQty] = useState(1);
@@ -35,11 +35,10 @@ const BuyActionWindow = ({ stock, onClose }) => {
   };
 
   const handlePriceChange = (val) => {
-    // allow floats
     setPrice(val);
   };
 
-  const handleBuy = (e) => {
+  const handleSell = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -51,12 +50,12 @@ const BuyActionWindow = ({ stock, onClose }) => {
     const orderData = {
       instrument: stock.name,
       exchange: stock.exchange || "NSE",
-      type: "BUY",
+      type: "SELL",
       qty: `${qty} / ${qty}`,
       price: orderPriceValue,
       status: orderType === "MARKET" ? "Executed" : "Pending",
       time: orderTime,
-      typeClass: "buy",
+      typeClass: "sell",
       statusClass: orderType === "MARKET" ? "executed" : "pending",
     };
 
@@ -66,41 +65,41 @@ const BuyActionWindow = ({ stock, onClose }) => {
         setIsSuccess(true);
         setTimeout(() => {
           onClose();
+          // Optionally reload the page if we're on the orders tab to show the new order immediately
           if (window.location.pathname.endsWith("/orders")) {
             window.location.reload();
           }
         }, 1500);
       })
       .catch((err) => {
-        console.error("Error placing buy order:", err);
+        console.error("Error placing sell order:", err);
         setIsSubmitting(false);
         alert("Failed to place order. Please try again.");
       });
   };
 
   const currentPrice = orderType === "MARKET" ? (stock.price || 0) : parseFloat(price || 0);
-  // MIS orders have 5x leverage (20% margin required)
   const marginMultiplier = productType === "MIS" ? 0.2 : 1;
   const marginRequired = (qty * currentPrice * marginMultiplier).toFixed(2);
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div 
-        className={`modal-container buy-window ${isSuccess ? 'order-success' : ''}`} 
+        className={`modal-container sell-window ${isSuccess ? 'order-success' : ''}`} 
         onClick={(e) => e.stopPropagation()}
       >
         {isSuccess ? (
-          <div className="success-state">
-            <span className="material-symbols-outlined success-icon animate-bounce">check_circle</span>
-            <h2>Order Placed Successfully!</h2>
-            <p>Bought {qty} shares of {stock.name} ({productType})</p>
+          <div className="success-state" style={{ background: "linear-gradient(180deg, #fef2f2 0%, #ffffff 100%)" }}>
+            <span className="material-symbols-outlined success-icon animate-bounce" style={{ color: "#ef4444" }}>check_circle</span>
+            <h2 style={{ color: "#991b1b" }}>Order Placed Successfully!</h2>
+            <p>Sold {qty} shares of {stock.name} ({productType})</p>
           </div>
         ) : (
-          <form onSubmit={handleBuy}>
+          <form onSubmit={handleSell}>
             {/* Header */}
-            <div className="modal-header buy-theme">
+            <div className="modal-header sell-theme">
               <div className="header-info">
-                <h3>Buy {stock.name}</h3>
+                <h3>Sell {stock.name}</h3>
                 <span className="exchange-badge">{stock.exchange}</span>
               </div>
               <div className="header-price">
@@ -115,7 +114,7 @@ const BuyActionWindow = ({ stock, onClose }) => {
               <div className="segmented-control">
                 <button
                   type="button"
-                  className={productType === "CNC" ? "active cnc" : ""}
+                  className={productType === "CNC" ? "active" : ""}
                   onClick={() => setProductType("CNC")}
                 >
                   <strong>CNC</strong>
@@ -199,7 +198,7 @@ const BuyActionWindow = ({ stock, onClose }) => {
             <div className="modal-summary">
               <div className="summary-row">
                 <span className="summary-label">Margin Required</span>
-                <span className="summary-value">₹{marginRequired}</span>
+                <span className="summary-value sell-theme">₹{marginRequired}</span>
               </div>
               {productType === "MIS" && (
                 <div className="summary-row badge-row">
@@ -220,13 +219,13 @@ const BuyActionWindow = ({ stock, onClose }) => {
               </button>
               <button 
                 type="submit" 
-                className="btn-modal-buy"
+                className="btn-modal-sell"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
                   <span className="spinner"></span>
                 ) : (
-                  <>Buy Order</>
+                  <>Sell Order</>
                 )}
               </button>
             </div>
@@ -237,4 +236,4 @@ const BuyActionWindow = ({ stock, onClose }) => {
   );
 };
 
-export default BuyActionWindow;
+export default SellActionWindow;

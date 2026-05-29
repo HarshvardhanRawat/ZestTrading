@@ -4,6 +4,7 @@ import logoImg from '../assets/Zest_logoT.png';
 
 import axios from "axios";
 import BuyActionWindow from "../components/buyActionWindow";
+import SellActionWindow from "../components/sellActionWindow";
 
 // import { watchlist } from "../data/data.js";
 
@@ -12,6 +13,7 @@ const Sidebar = () => {
 
   const [allWatchlist, setAllWatchlist] = useState([]);
   const [selectedStockForBuy, setSelectedStockForBuy] = useState(null);
+  const [selectedStockForSell, setSelectedStockForSell] = useState(null);
 
   useEffect(() => {
     axios.get('http://localhost:3000/allWatchlist')
@@ -100,7 +102,11 @@ const Sidebar = () => {
                     <span className="material-symbols-outlined">shopping_cart</span>
                     Buy
                   </button>
-                  <button className="action-btn sell" type="button">
+                  <button 
+                    className="action-btn sell" 
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); setSelectedStockForSell(item); }}
+                  >
                     <span className="material-symbols-outlined">sell</span>
                     Sell
                   </button>
@@ -145,6 +151,12 @@ const Sidebar = () => {
         <BuyActionWindow 
           stock={selectedStockForBuy} 
           onClose={() => setSelectedStockForBuy(null)} 
+        />
+      )}
+      {selectedStockForSell && (
+        <SellActionWindow 
+          stock={selectedStockForSell} 
+          onClose={() => setSelectedStockForSell(null)} 
         />
       )}
     </aside>
