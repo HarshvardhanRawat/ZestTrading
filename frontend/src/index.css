@@ -601,3 +601,71 @@ img {
   margin: 0 auto;
   width: 100%;
 }
+
+/* Server Status Banner Styles */
+.server-status-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  z-index: 100;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.server-status-banner.offline {
+  background-color: #fce8e6;
+  color: #c5221f;
+  border-bottom: 1px solid #f5c2c1;
+}
+
+.server-status-banner.online {
+  background-color: #e6f4ea;
+  color: #137333;
+  border-bottom: 1px solid #c2e7cc;
+}
+
+:root[data-theme='dark'] .server-status-banner.offline {
+  background-color: #3b1716;
+  color: #fbc6c4;
+  border-bottom: 1px solid #5f2120;
+}
+
+:root[data-theme='dark'] .server-status-banner.online {
+  background-color: #0f341d;
+  color: #c4eed0;
+  border-bottom: 1px solid #1a5c32;
+}
+
+.server-status-banner .spin-icon {
+  font-size: 18px;
+  animation: banner-pulse 2s infinite ease-in-out;
+}
+
+.server-status-banner.offline .spin-icon {
+  animation: banner-spin 2s infinite linear;
+}
+
+@keyframes banner-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes banner-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.95); }
+}
+
+/* Shift navbar if banner is active */
+body:has(.server-status-banner.offline) .navbar,
+body:has(.server-status-banner.online) .navbar {
+  top: 40px;
+}

@@ -2,33 +2,37 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import logoImg from '../assets/Zest_logo.png';
 import { useTheme } from '../hooks/useTheme';
+import ServerStatusBanner from '../components/ServerStatusBanner';
 
 function Navbar() {
   const [theme, toggleTheme] = useTheme();
 
   return (
-    <nav className="navbar">
-      <div className="container flex justify-between items-center h-full">
-        <Link className="logo" to="/">
-          <img src={logoImg} alt="Logo" />
-        </Link>
-        <div className="nav-links">
-          <Link className="nav-link" to="/product">Product</Link>
-          <Link className="nav-link" to="/pricing">Pricing</Link>
-          <Link className="nav-link" to="/about">About</Link>
-          <Link className="nav-link" to="/support">Support</Link>
+    <>
+      <nav className="navbar">
+        <div className="container flex justify-between items-center h-full">
+          <Link className="logo" to="/">
+            <img src={logoImg} alt="Logo" />
+          </Link>
+          <div className="nav-links">
+            <Link className="nav-link" to="/product">Product</Link>
+            <Link className="nav-link" to="/pricing">Pricing</Link>
+            <Link className="nav-link" to="/about">About</Link>
+            <Link className="nav-link" to="/support">Support</Link>
+          </div>
+          <div className="flex items-center" style={{ gap: "20px" }}>
+            <button onClick={toggleTheme} className="theme-toggle-btn" title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`} style={{ cursor: 'pointer' }}>
+              <span className="material-symbols-outlined">
+                {theme === 'light' ? 'dark_mode' : 'light_mode'}
+              </span>
+            </button>
+            <Link to="/login" style={{ color: "var(--color-on-surface-variant)", textDecoration: "none", fontWeight: "600" }} className="hover-underline">Log In</Link>
+            <Link to="/signup"><button className="btn btn-primary label-md">Signup</button></Link>
+          </div>
         </div>
-        <div className="flex items-center" style={{ gap: "20px" }}>
-          <button onClick={toggleTheme} className="theme-toggle-btn" title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`} style={{ cursor: 'pointer' }}>
-            <span className="material-symbols-outlined">
-              {theme === 'light' ? 'dark_mode' : 'light_mode'}
-            </span>
-          </button>
-          <Link to="/login" style={{ color: "var(--color-on-surface-variant)", textDecoration: "none", fontWeight: "600" }} className="hover-underline">Log In</Link>
-          <Link to="/signup"><button className="btn btn-primary label-md">Signup</button></Link>
-        </div>
-      </div>
-    </nav>
+      </nav>
+      <ServerStatusBanner />
+    </>
   );
 }
 

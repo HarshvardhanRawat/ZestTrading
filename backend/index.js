@@ -43,6 +43,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/', tradeRoutes);
 app.use('/', authRoutes);
 
+app.get('/ping', (req, res) => {
+    res.status(200).json({ status: "ok" });
+});
+
 mongoose.connect(URI)
     .then(() => {
         console.log('Connected to MongoDB');
