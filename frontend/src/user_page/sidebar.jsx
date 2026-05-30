@@ -16,7 +16,7 @@ const Sidebar = () => {
   const [selectedStockForSell, setSelectedStockForSell] = useState(null);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/allWatchlist')
+    axios.get(`${import.meta.env.VITE_API_URL}/allWatchlist`)
       .then(res => {
         setAllWatchlist(res.data);
       })

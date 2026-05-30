@@ -1,16 +1,45 @@
-# React + Vite
+# Zest Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The frontend for the Zest trading platform, built with React and Vite. It provides a sleek, responsive interface for users to execute trades and track their investments.
 
-Currently, two official plugins are available:
+## How to Install and Run
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+1. Open a terminal and navigate to the `frontend` directory:
+   ```bash
+   cd frontend
+   ```
+2. Install the dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-## React Compiler
+## Environment Variables
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+You need to create a `.env` file in the root of the `frontend` folder with the following variable to connect to the backend API:
 
-## Expanding the ESLint configuration
+```env
+VITE_API_URL=http://localhost:3000
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Folder Structure
+
+The `src` directory is organized into logical feature areas:
+
+- `landing_page/`: Contains public-facing pages like the home page, login (`login.jsx`), and signup (`signup.jsx`).
+- `user_page/`: Contains all authenticated dashboard views, such as `dashboard/`, `holdings/`, `orders/`, `positions/`, and `funds/`.
+- `components/`: Reusable UI components used across the application, like the `buyActionWindow.jsx` and `sellActionWindow.jsx` modals.
+
+## Pages and Routes
+
+- `/` - Public Landing Page
+- `/signup` - User Registration
+- `/login` - User Authentication
+- `/dashboard` - Main Trading Dashboard
+- `/orders` - Order History & Pending Orders
+- `/holdings` - Long-term Investments (CNC)
+- `/positions` - Intraday Trades (MIS)
+- `/funds` - Wallet, Deposits, and Withdrawals

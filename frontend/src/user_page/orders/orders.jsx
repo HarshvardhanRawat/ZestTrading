@@ -8,7 +8,7 @@ const Orders = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/allOrders")
+      .get(`${import.meta.env.VITE_API_URL}/allOrders`)
       .then((res) => {
         setOrders(res.data || []);
       })

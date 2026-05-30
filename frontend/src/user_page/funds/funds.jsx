@@ -19,7 +19,7 @@ const Funds = () => {
 
   // Load funds state from backend
   useEffect(() => {
-    axios.get("http://localhost:3000/getFunds")
+    axios.get(`${import.meta.env.VITE_API_URL}/getFunds`)
       .then(res => {
         setBalance(res.data.balance);
         setOpeningBalance(res.data.openingBalance);
@@ -50,7 +50,7 @@ const Funds = () => {
       return;
     }
 
-    axios.post("http://localhost:3000/addFunds", { amount: amt, paymentMethod })
+    axios.post(`${import.meta.env.VITE_API_URL}/addFunds`, { amount: amt, paymentMethod })
       .then(res => {
         setBalance(res.data.balance);
         setOpeningBalance(res.data.openingBalance);
@@ -79,7 +79,7 @@ const Funds = () => {
       return;
     }
 
-    axios.post("http://localhost:3000/withdrawFunds", { amount: amt })
+    axios.post(`${import.meta.env.VITE_API_URL}/withdrawFunds`, { amount: amt })
       .then(res => {
         setBalance(res.data.balance);
         setOpeningBalance(res.data.openingBalance);
@@ -97,7 +97,7 @@ const Funds = () => {
 
   const handleResetHistory = () => {
     if (window.confirm("Are you sure you want to reset balance and transaction history to default?")) {
-      axios.post("http://localhost:3000/resetFunds")
+      axios.post(`${import.meta.env.VITE_API_URL}/resetFunds`)
         .then(res => {
           setBalance(res.data.balance);
           setOpeningBalance(res.data.openingBalance);

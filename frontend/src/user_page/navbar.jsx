@@ -18,7 +18,7 @@ const Navbar = ({ username }) => {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:3000/logout", {}, { withCredentials: true });
+      await axios.post(`${import.meta.env.VITE_API_URL}/logout`, {}, { withCredentials: true });
       localStorage.removeItem("username");
       navigate("/login");
     } catch (err) {

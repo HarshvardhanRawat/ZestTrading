@@ -18,7 +18,6 @@ module.exports.signup = async (req, res, next) => {
             httpOnly: false,
         });
         res.status(201).json({ message: "User created successfully", success: true, user });
-        next();
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Internal Server Error" });
@@ -43,7 +42,6 @@ module.exports.login = async (req, res, next) => {
             httpOnly: false,
         });
         res.status(200).json({ message: "User logged in successfully", success: true, user });
-        next();
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Internal Server Error" });

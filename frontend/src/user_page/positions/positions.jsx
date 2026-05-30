@@ -9,7 +9,7 @@ const Positions = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/allPositions")
+      .get(`${import.meta.env.VITE_API_URL}/allPositions`)
       .then((res) => {
         setAllPositions(res.data || []);
       })
@@ -18,7 +18,7 @@ const Positions = () => {
       });
 
     axios
-      .get("http://localhost:3000/getFunds")
+      .get(`${import.meta.env.VITE_API_URL}/getFunds`)
       .then((res) => {
         setBalance(res.data.balance);
         setUsedMargin(res.data.usedMargin);

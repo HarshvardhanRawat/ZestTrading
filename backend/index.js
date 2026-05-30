@@ -1,11 +1,15 @@
 require('dotenv').config();
 
+if (!process.env.JWT_SECRET || !process.env.MONGO_URI) {
+    console.error("FATAL ERROR: JWT_SECRET and MONGO_URI must be set in .env");
+    process.exit(1);
+}
+
 const express = require('express');
 const app = express();
 
 const mongoose = require('mongoose');
 
-const bodyParser = require('body-parser');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
@@ -23,7 +27,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -32,12 +35,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/', tradeRoutes);
 app.use('/', authRoutes);
 
-app.listen(PORT, () => {
-    try {
-        console.log(`Server is running on port ${PORT}`);
-        mongoose.connect(URI);
+mongoose.connect(URI)
+    .then(() => {
         console.log('Connected to MongoDB');
-    } catch (err) {
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+    })
+    .catch((err) => {
         console.error('Error connecting to MongoDB:', err);
-    }
-});
+        process.exit(1);
+    });

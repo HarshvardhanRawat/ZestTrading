@@ -60,7 +60,7 @@ const SellActionWindow = ({ stock, onClose }) => {
       productType: productType,
     };
 
-    axios.post("http://localhost:3000/newOrder", orderData)
+    axios.post(`${import.meta.env.VITE_API_URL}/newOrder`, orderData)
       .then((res) => {
         setIsSubmitting(false);
         setIsSuccess(true);

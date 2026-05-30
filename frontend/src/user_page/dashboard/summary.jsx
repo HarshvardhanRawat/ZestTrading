@@ -121,7 +121,7 @@ const Summary = () => {
   // Fetch orders, holdings and funds
   useEffect(() => {
     axios
-      .get("http://localhost:3000/allOrders")
+      .get(`${import.meta.env.VITE_API_URL}/allOrders`)
       .then((res) => {
         setOrders(res.data || []);
       })
@@ -130,7 +130,7 @@ const Summary = () => {
       });
 
     axios
-      .get("http://localhost:3000/allHoldings")
+      .get(`${import.meta.env.VITE_API_URL}/allHoldings`)
       .then((res) => {
         setHoldings(res.data || []);
       })
@@ -139,7 +139,7 @@ const Summary = () => {
       });
 
     axios
-      .get("http://localhost:3000/getFunds")
+      .get(`${import.meta.env.VITE_API_URL}/getFunds`)
       .then((res) => {
         setBalance(res.data.balance);
         setUsedMargin(res.data.usedMargin);
