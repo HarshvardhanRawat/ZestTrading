@@ -29,11 +29,11 @@ Zest is a paper-trading web application that simulates the experience of a real 
 
 ## Tech Stack
 
-| Layer     | Technology                                      |
-|-----------|-------------------------------------------------|
-| Frontend  | React 19, Vite, React Router v7, Axios, MUI, Tailwind CSS |
-| Backend   | Node.js, Express 5, JWT (cookie-based auth), bcrypt |
-| Database  | MongoDB with Mongoose ODM                       |
+| Layer    | Technology                                                |
+| -------- | --------------------------------------------------------- |
+| Frontend | React 19, Vite, React Router v7, Axios, MUI, Tailwind CSS |
+| Backend  | Node.js, Express 5, JWT (cookie-based auth), bcrypt       |
+| Database | MongoDB with Mongoose ODM                                 |
 
 ---
 
@@ -73,6 +73,7 @@ ZestTrading/
 ### Steps
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/dotrwt/ZestTrading.git
    cd ZestTrading
@@ -88,7 +89,7 @@ Both servers need to be running simultaneously for the app to work.
 
 ## Screenshots
 
-> *(Add screenshots or a demo GIF of the dashboard, order window, and authentication screens here)*
+> _(Add screenshots or a demo GIF of the dashboard, order window, and authentication screens here)_
 
 ---
 
@@ -99,3 +100,9 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
+
+<div align='center'>
+
+developed by <a href='https://dotrwt.in'>dotrwt</a>
+
+</div>

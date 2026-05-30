@@ -26,11 +26,13 @@ The Node.js and Express API server for the Zest trading platform. It handles use
 ### Installation
 
 1. Navigate to the backend directory:
+
    ```bash
    cd backend
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
@@ -56,10 +58,10 @@ MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/zest
 JWT_SECRET=your_super_secret_jwt_key_here
 ```
 
-| Variable     | Required | Description                                              |
-|--------------|----------|----------------------------------------------------------|
-| `PORT`       | No       | Port the server listens on. Defaults to `3000`.          |
-| `MONGO_URI`  | Yes      | MongoDB connection string. App will not start without it. |
+| Variable     | Required | Description                                                                   |
+| ------------ | -------- | ----------------------------------------------------------------------------- |
+| `PORT`       | No       | Port the server listens on. Defaults to `3000`.                               |
+| `MONGO_URI`  | Yes      | MongoDB connection string. App will not start without it.                     |
 | `JWT_SECRET` | Yes      | Secret key used to sign and verify JWT tokens. App will not start without it. |
 
 > Never commit your `.env` file. It is already listed in `.gitignore`.
@@ -75,9 +77,11 @@ All routes are mounted at the root `/`. Trading routes require a valid JWT sessi
 ### Authentication
 
 #### `POST /signup`
+
 Register a new user. On success, sets a `token` cookie and returns the created user.
 
 **Request body:**
+
 ```json
 {
   "name": "Harshvardhan",
@@ -87,6 +91,7 @@ Register a new user. On success, sets a `token` cookie and returns the created u
 ```
 
 **Response `201`:**
+
 ```json
 {
   "message": "User created successfully",
@@ -98,9 +103,11 @@ Register a new user. On success, sets a `token` cookie and returns the created u
 ---
 
 #### `POST /login`
+
 Authenticate an existing user. On success, sets a `token` cookie.
 
 **Request body:**
+
 ```json
 {
   "email": "harsh@example.com",
@@ -109,6 +116,7 @@ Authenticate an existing user. On success, sets a `token` cookie.
 ```
 
 **Response `200`:**
+
 ```json
 {
   "message": "User logged in successfully",
@@ -120,13 +128,17 @@ Authenticate an existing user. On success, sets a `token` cookie.
 ---
 
 #### `POST /verify`
+
 Verify the current session cookie. Used by the frontend on every dashboard mount to check if the user is still authenticated.
 
 **Response:**
+
 ```json
 { "status": true, "user": "Harshvardhan" }
 ```
+
 or
+
 ```json
 { "status": false }
 ```
@@ -134,9 +146,11 @@ or
 ---
 
 #### `POST /logout`
+
 Clears the `token` cookie and ends the session.
 
 **Response:**
+
 ```json
 { "message": "User logged out successfully", "success": true }
 ```
@@ -150,6 +164,7 @@ Clears the `token` cookie and ends the session.
 ---
 
 #### `GET /allHoldings`
+
 Returns all long-term CNC holdings for the authenticated user.
 
 **Response `200`:** Array of holding objects.
@@ -157,6 +172,7 @@ Returns all long-term CNC holdings for the authenticated user.
 ---
 
 #### `GET /allPositions`
+
 Returns all intraday MIS positions for the authenticated user.
 
 **Response `200`:** Array of position objects.
@@ -164,6 +180,7 @@ Returns all intraday MIS positions for the authenticated user.
 ---
 
 #### `GET /allWatchlist`
+
 Returns the authenticated user's watchlist.
 
 **Response `200`:** Array of watchlist stock objects.
@@ -171,6 +188,7 @@ Returns the authenticated user's watchlist.
 ---
 
 #### `GET /allOrders`
+
 Returns the full order history for the authenticated user.
 
 **Response `200`:** Array of order objects.
@@ -178,9 +196,11 @@ Returns the full order history for the authenticated user.
 ---
 
 #### `POST /newOrder`
+
 Place a new BUY or SELL order. This is the core trading endpoint — it validates balance, updates holdings or positions, and records the order.
 
 **Request body:**
+
 ```json
 {
   "instrument": "RELIANCE",
@@ -194,29 +214,33 @@ Place a new BUY or SELL order. This is the core trading endpoint — it validate
 }
 ```
 
-| Field         | Values                  | Description                                     |
-|---------------|-------------------------|-------------------------------------------------|
-| `type`        | `"BUY"` or `"SELL"`     | Order direction                                 |
-| `productType` | `"CNC"` or `"MIS"`      | Delivery or Intraday. Defaults to `"CNC"`.      |
-| `qty`         | Positive integer        | Number of shares                                |
-| `price`       | Decimal string          | Price per share                                 |
+| Field         | Values              | Description                                |
+| ------------- | ------------------- | ------------------------------------------ |
+| `type`        | `"BUY"` or `"SELL"` | Order direction                            |
+| `productType` | `"CNC"` or `"MIS"`  | Delivery or Intraday. Defaults to `"CNC"`. |
+| `qty`         | Positive integer    | Number of shares                           |
+| `price`       | Decimal string      | Price per share                            |
 
 **BUY logic:**
+
 - Checks user has sufficient balance (`qty × price`)
 - Deducts total value from `user.balance`
 - CNC: creates or updates a Holding with weighted average price
 - MIS: creates or updates a Position
 
 **SELL logic:**
+
 - CNC: checks the user holds enough shares, deducts from Holding, adds proceeds to balance
 - MIS: reduces an existing Position, or creates a short-sell Position with negative quantity
 
 **Response `200`:**
+
 ```json
 { "message": "Order placed successfully", "user": { ... } }
 ```
 
 **Error responses:**
+
 - `400` — Insufficient balance, or insufficient shares to sell
 - `500` — Internal server error
 
@@ -225,9 +249,11 @@ Place a new BUY or SELL order. This is the core trading endpoint — it validate
 ### Fund Management Routes
 
 #### `GET /getFunds`
+
 Returns the user's current balance, opening balance, used margin, and full transaction history.
 
 **Response `200`:**
+
 ```json
 {
   "balance": 482910.45,
@@ -240,9 +266,11 @@ Returns the user's current balance, opening balance, used margin, and full trans
 ---
 
 #### `POST /addFunds`
+
 Simulate depositing money into the account. Supports UPI and Netbanking. Creates a transaction record.
 
 **Request body:**
+
 ```json
 {
   "amount": 10000,
@@ -253,9 +281,11 @@ Simulate depositing money into the account. Supports UPI and Netbanking. Creates
 ---
 
 #### `POST /withdrawFunds`
+
 Simulate withdrawing money. Validates that the withdrawal does not exceed `balance - usedMargin`.
 
 **Request body:**
+
 ```json
 {
   "amount": 5000
@@ -265,6 +295,7 @@ Simulate withdrawing money. Validates that the withdrawal does not exceed `balan
 ---
 
 #### `POST /resetFunds`
+
 Resets the account balance and transaction history to the default demo state. Useful for testing.
 
 ---
@@ -274,89 +305,95 @@ Resets the account balance and transaction history to the default demo state. Us
 All models are user-scoped — every document contains a `userId` field referencing the User collection.
 
 ### User
+
 Stores authentication credentials and account financials.
 
-| Field           | Type   | Description                              |
-|-----------------|--------|------------------------------------------|
-| `name`          | String | Unique display name                      |
-| `email`         | String | Unique email address                     |
-| `password`      | String | bcrypt-hashed password (min 6 chars)     |
-| `balance`       | Number | Available account balance                |
-| `openingBalance`| Number | Reference balance at account open        |
-| `usedMargin`    | Number | Margin currently locked in positions     |
+| Field            | Type   | Description                          |
+| ---------------- | ------ | ------------------------------------ |
+| `name`           | String | Unique display name                  |
+| `email`          | String | Unique email address                 |
+| `password`       | String | bcrypt-hashed password (min 6 chars) |
+| `balance`        | Number | Available account balance            |
+| `openingBalance` | Number | Reference balance at account open    |
+| `usedMargin`     | Number | Margin currently locked in positions |
 
 ---
 
 ### Holding
+
 Represents a long-term stock position (CNC / Delivery).
 
-| Field    | Type   | Description                                |
-|----------|--------|--------------------------------------------|
-| `name`   | String | Stock ticker symbol                        |
-| `desc`   | String | Stock description                          |
-| `qty`    | Number | Number of shares held                      |
-| `avg`    | Number | Weighted average buy price                 |
-| `ltp`    | Number | Last traded price                          |
-| `curVal` | Number | Current market value (`qty × ltp`)         |
-| `pl`     | Number | Profit / Loss (`curVal - qty × avg`)       |
-| `chg`    | String | Percentage change string (e.g. `+2.45%`)   |
-| `type`   | String | `"positive"` or `"negative"`               |
+| Field    | Type   | Description                              |
+| -------- | ------ | ---------------------------------------- |
+| `name`   | String | Stock ticker symbol                      |
+| `desc`   | String | Stock description                        |
+| `qty`    | Number | Number of shares held                    |
+| `avg`    | Number | Weighted average buy price               |
+| `ltp`    | Number | Last traded price                        |
+| `curVal` | Number | Current market value (`qty × ltp`)       |
+| `pl`     | Number | Profit / Loss (`curVal - qty × avg`)     |
+| `chg`    | String | Percentage change string (e.g. `+2.45%`) |
+| `type`   | String | `"positive"` or `"negative"`             |
 
 ---
 
 ### Position
+
 Represents an intraday trade (MIS). Negative `qty` indicates a short-sell position.
 
-| Field     | Type   | Description                                |
-|-----------|--------|--------------------------------------------|
-| `name`    | String | Stock ticker symbol                        |
-| `product` | String | Always `"MIS"`                             |
-| `qty`     | Number | Shares held (negative = short position)    |
-| `avg`     | Number | Average entry price                        |
-| `ltp`     | Number | Last traded price                          |
-| `pl`      | Number | Profit / Loss                              |
-| `type`    | String | `"positive"` or `"negative"`               |
+| Field     | Type   | Description                             |
+| --------- | ------ | --------------------------------------- |
+| `name`    | String | Stock ticker symbol                     |
+| `product` | String | Always `"MIS"`                          |
+| `qty`     | Number | Shares held (negative = short position) |
+| `avg`     | Number | Average entry price                     |
+| `ltp`     | Number | Last traded price                       |
+| `pl`      | Number | Profit / Loss                           |
+| `type`    | String | `"positive"` or `"negative"`            |
 
 ---
 
 ### Order
+
 Immutable ledger entry for every trade placed.
 
-| Field        | Type   | Description                                |
-|--------------|--------|--------------------------------------------|
-| `instrument` | String | Stock ticker symbol                        |
-| `exchange`   | String | Exchange (e.g. `"NSE"`)                    |
-| `type`       | String | `"BUY"` or `"SELL"`                        |
-| `qty`        | String | Quantity string (e.g. `"10 / 10"`)         |
-| `price`      | String | Execution price string                     |
-| `status`     | String | `"Executed"` or `"Pending"`                |
-| `time`       | String | Time of order placement                    |
+| Field        | Type   | Description                        |
+| ------------ | ------ | ---------------------------------- |
+| `instrument` | String | Stock ticker symbol                |
+| `exchange`   | String | Exchange (e.g. `"NSE"`)            |
+| `type`       | String | `"BUY"` or `"SELL"`                |
+| `qty`        | String | Quantity string (e.g. `"10 / 10"`) |
+| `price`      | String | Execution price string             |
+| `status`     | String | `"Executed"` or `"Pending"`        |
+| `time`       | String | Time of order placement            |
 
 ---
 
 ### Watchlist
+
 Stocks the user is tracking.
 
-| Field      | Type    | Description                              |
-|------------|---------|------------------------------------------|
-| `name`     | String  | Stock ticker symbol                      |
-| `exchange` | String  | Exchange (e.g. `"NSE"`)                  |
-| `price`    | Number  | Current price                            |
-| `percent`  | Number  | Day percentage change                    |
-| `isDown`   | Boolean | `true` if the stock is down for the day  |
+| Field      | Type    | Description                             |
+| ---------- | ------- | --------------------------------------- |
+| `name`     | String  | Stock ticker symbol                     |
+| `exchange` | String  | Exchange (e.g. `"NSE"`)                 |
+| `price`    | Number  | Current price                           |
+| `percent`  | Number  | Day percentage change                   |
+| `isDown`   | Boolean | `true` if the stock is down for the day |
 
 ---
 
 ### Transaction
+
 Ledger entry for every fund deposit or withdrawal.
 
-| Field   | Type   | Description                                      |
-|---------|--------|--------------------------------------------------|
-| `type`  | String | `"Funds Added"` or `"Withdrawal Requested"`      |
-| `desc`  | String | Payment method or reference detail               |
-| `date`  | String | Human-readable date string                       |
-| `amount`| String | Formatted amount string (e.g. `"+₹25,000.00"`)  |
-| `status`| String | `"Success"` or `"Pending"`                       |
+| Field    | Type   | Description                                    |
+| -------- | ------ | ---------------------------------------------- |
+| `type`   | String | `"Funds Added"` or `"Withdrawal Requested"`    |
+| `desc`   | String | Payment method or reference detail             |
+| `date`   | String | Human-readable date string                     |
+| `amount` | String | Formatted amount string (e.g. `"+₹25,000.00"`) |
+| `status` | String | `"Success"` or `"Pending"`                     |
 
 ---
 
@@ -400,3 +437,9 @@ backend/
 ## How New User Data Seeding Works
 
 When a new user logs in for the first time and hits any protected route, `authMiddleware.js` checks if the user has any watchlist documents. If the count is zero, it seeds the account with sample holdings, positions, orders, watchlist stocks, and default transactions from the `init/` data files. This gives every new user a realistic-looking pre-populated portfolio to explore immediately.
+
+<div align='center'>
+
+developed by <a href='https://dotrwt.in'>dotrwt</a>
+
+</div>

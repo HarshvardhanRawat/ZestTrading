@@ -25,16 +25,19 @@ The client-side application for the Zest trading platform, built with React 19 a
 ### Installation
 
 1. Navigate to the frontend directory:
+
    ```bash
    cd frontend
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Create a `.env` file in the `frontend/` root:
+
    ```env
    VITE_API_URL=http://localhost:3000
    ```
@@ -50,20 +53,20 @@ The app will be available at `http://localhost:5173`.
 
 ## Available Scripts
 
-| Script          | Description                              |
-|-----------------|------------------------------------------|
-| `npm run dev`   | Start the Vite development server        |
-| `npm run build` | Build the app for production             |
-| `npm run preview` | Preview the production build locally   |
-| `npm run lint`  | Run ESLint across the project            |
+| Script            | Description                          |
+| ----------------- | ------------------------------------ |
+| `npm run dev`     | Start the Vite development server    |
+| `npm run build`   | Build the app for production         |
+| `npm run preview` | Preview the production build locally |
+| `npm run lint`    | Run ESLint across the project        |
 
 ---
 
 ## Environment Variables
 
-| Variable        | Required | Description                        | Example                      |
-|-----------------|----------|------------------------------------|------------------------------|
-| `VITE_API_URL`  | Yes      | Base URL of the backend API server | `http://localhost:3000`      |
+| Variable       | Required | Description                        | Example                 |
+| -------------- | -------- | ---------------------------------- | ----------------------- |
+| `VITE_API_URL` | Yes      | Base URL of the backend API server | `http://localhost:3000` |
 
 > All Axios requests in the app use `import.meta.env.VITE_API_URL` as the base URL. The app will fail to communicate with the backend if this variable is not set.
 
@@ -118,21 +121,21 @@ frontend/
 
 ## Pages and Routes
 
-| Route              | Component        | Auth Required | Description                            |
-|--------------------|------------------|---------------|----------------------------------------|
-| `/`                | `HomePage`       | No            | Public landing page                    |
-| `/about`           | `AboutPage`      | No            | About the platform                     |
-| `/product`         | `ProductPage`    | No            | Products overview                      |
-| `/pricing`         | `PricingPage`    | No            | Brokerage and pricing details          |
-| `/support`         | `SupportPage`    | No            | Support and ticket submission          |
-| `/signup`          | `SignupPage`     | No            | User registration                      |
-| `/login`           | `LoginPage`      | No            | User login                             |
-| `/dashboard`       | `Dashboard`      | Yes           | Portfolio summary with chart           |
-| `/dashboard/orders`    | `Orders`     | Yes           | Order history                          |
-| `/dashboard/holdings`  | `Holdings`   | Yes           | Long-term CNC holdings                 |
-| `/dashboard/positions` | `Positions`  | Yes           | Intraday MIS positions                 |
-| `/dashboard/funds`     | `Funds`      | Yes           | Fund management                        |
-| `*`                | `NotFound`       | No            | 404 fallback                           |
+| Route                  | Component     | Auth Required | Description                   |
+| ---------------------- | ------------- | ------------- | ----------------------------- |
+| `/`                    | `HomePage`    | No            | Public landing page           |
+| `/about`               | `AboutPage`   | No            | About the platform            |
+| `/product`             | `ProductPage` | No            | Products overview             |
+| `/pricing`             | `PricingPage` | No            | Brokerage and pricing details |
+| `/support`             | `SupportPage` | No            | Support and ticket submission |
+| `/signup`              | `SignupPage`  | No            | User registration             |
+| `/login`               | `LoginPage`   | No            | User login                    |
+| `/dashboard`           | `Dashboard`   | Yes           | Portfolio summary with chart  |
+| `/dashboard/orders`    | `Orders`      | Yes           | Order history                 |
+| `/dashboard/holdings`  | `Holdings`    | Yes           | Long-term CNC holdings        |
+| `/dashboard/positions` | `Positions`   | Yes           | Intraday MIS positions        |
+| `/dashboard/funds`     | `Funds`       | Yes           | Fund management               |
+| `*`                    | `NotFound`    | No            | 404 fallback                  |
 
 > Auth protection is handled inside `dashboard.jsx` — it calls `POST /verify` on mount and redirects to `/login` if the session is invalid.
 
@@ -145,6 +148,7 @@ frontend/
 Modal dialogs for placing orders. Accept a `stock` prop (name, price, exchange) and an `onClose` callback.
 
 **Features:**
+
 - Toggle between CNC (Delivery) and MIS (Intraday) product types
 - Toggle between Market and Limit order types
 - Quantity controls with +/- buttons
@@ -158,3 +162,9 @@ The main dashboard view. Embeds a live TradingView Advanced Chart widget showing
 ### `sidebar.jsx`
 
 Persistent dashboard sidebar. Fetches and displays the user's watchlist from `GET /allWatchlist`. Each watchlist item shows stock name, exchange, price, and percentage change with up/down colouring. Clicking a stock opens the buy order modal.
+
+<div align='center'>
+
+developed by <a href='https://dotrwt.in'>dotrwt</a>
+
+</div>
