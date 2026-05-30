@@ -19,12 +19,20 @@ const authRoutes = require('./routes/AuthRoute');
 const PORT = process.env.PORT || 3000;
 const URI = process.env.MONGO_URI;
 
+const frontendUrl = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, '') : null;
+
 const corsOptions = {
-    origin: process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5713'],
+    origin: frontendUrl ? [frontendUrl] : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5713'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
 };
+
+// Collapses double slashes in paths (e.g. //login -> /login)
+app.use((req, res, next) => {
+    req.url = req.url.replace(/\/{2,}/g, '/');
+    next();
+});
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
