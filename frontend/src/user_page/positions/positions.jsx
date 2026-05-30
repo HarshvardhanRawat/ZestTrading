@@ -4,6 +4,8 @@ import axios from "axios";
 const Positions = () => {
   const [allPositions, setAllPositions] = useState([]);
   const [exportSuccess, setExportSuccess] = useState(false);
+  const [balance, setBalance] = useState(482910.45);
+  const [usedMargin, setUsedMargin] = useState(120400.00);
 
   useEffect(() => {
     axios
@@ -13,6 +15,16 @@ const Positions = () => {
       })
       .catch((err) => {
         console.error("Error fetching positions:", err);
+      });
+
+    axios
+      .get("http://localhost:3000/getFunds")
+      .then((res) => {
+        setBalance(res.data.balance);
+        setUsedMargin(res.data.usedMargin);
+      })
+      .catch((err) => {
+        console.error("Error fetching funds:", err);
       });
   }, []);
 
@@ -116,8 +128,8 @@ const Positions = () => {
             <span className="label">Margin Used</span>
             <span className="material-symbols-outlined">account_balance_wallet</span>
           </div>
-          <h2 className="value">₹1,45,000</h2>
-          <p className="sub-label">Available: ₹85,200</p>
+          <h2 className="value">{formatCurrency(usedMargin)}</h2>
+          <p className="sub-label">Available: {formatCurrency(balance - usedMargin)}</p>
         </div>
       </div>
 

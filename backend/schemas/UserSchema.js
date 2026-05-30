@@ -17,6 +17,18 @@ const UserSchema = new Schema({
         required: [true, "Your Password is required"],
         minlength: 6
     },
+    balance: {
+        type: Number,
+        default: 482910.45
+    },
+    openingBalance: {
+        type: Number,
+        default: 450000.00
+    },
+    usedMargin: {
+        type: Number,
+        default: 120400.00
+    },
 });
 
 UserSchema.pre("save", async function () {

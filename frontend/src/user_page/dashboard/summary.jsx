@@ -115,8 +115,10 @@ const Summary = () => {
   const [orders, setOrders] = useState([]);
   const [holdings, setHoldings] = useState([]);
   const [hoveredSector, setHoveredSector] = useState(null);
+  const [balance, setBalance] = useState(482910.45);
+  const [usedMargin, setUsedMargin] = useState(120400.00);
 
-  // Fetch orders and holdings
+  // Fetch orders, holdings and funds
   useEffect(() => {
     axios
       .get("http://localhost:3000/allOrders")
@@ -134,6 +136,16 @@ const Summary = () => {
       })
       .catch((err) => {
         console.error("Error fetching holdings:", err);
+      });
+
+    axios
+      .get("http://localhost:3000/getFunds")
+      .then((res) => {
+        setBalance(res.data.balance);
+        setUsedMargin(res.data.usedMargin);
+      })
+      .catch((err) => {
+        console.error("Error fetching funds:", err);
       });
   }, []);
 
@@ -229,7 +241,7 @@ const Summary = () => {
           <div className="card-decoration-2"></div>
           <span className="card-label" style={{ color: "var(--color-on-surface-variant)" }}>Available Margin</span>
           <h2 className="portfolio-amount" style={{ color: "var(--color-on-surface)" }}>
-            {parseFloat(localStorage.getItem("zest_margin_balance") || 482910.45).toLocaleString("en-IN", {
+            {balance.toLocaleString("en-IN", {
               style: "currency",
               currency: "INR",
             })}
@@ -237,7 +249,7 @@ const Summary = () => {
           <div className="portfolio-change">
             <span className="material-symbols-outlined" style={{ color: "var(--color-secondary)" }}>account_balance_wallet</span>
             <span className="change-text" style={{ color: "var(--color-on-surface-variant)", fontFamily: "inherit" }}>
-              Used Margin: {parseFloat(localStorage.getItem("zest_used_margin") || 120400).toLocaleString("en-IN", {
+              Used Margin: {usedMargin.toLocaleString("en-IN", {
                 style: "currency",
                 currency: "INR",
               })}

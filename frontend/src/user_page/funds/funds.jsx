@@ -1,55 +1,11 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const Funds = () => {
-  // Load funds state from localStorage with fallbacks
-  const [balance, setBalance] = useState(() => {
-    const saved = localStorage.getItem("zest_margin_balance");
-    return saved !== null ? parseFloat(saved) : 482910.45;
-  });
-
-  const [openingBalance, setOpeningBalance] = useState(() => {
-    const saved = localStorage.getItem("zest_opening_balance");
-    return saved !== null ? parseFloat(saved) : 450000.00;
-  });
-
-  const [usedMargin, setUsedMargin] = useState(() => {
-    const saved = localStorage.getItem("zest_used_margin");
-    return saved !== null ? parseFloat(saved) : 120400.00;
-  });
-
-  const [transactions, setTransactions] = useState(() => {
-    const saved = localStorage.getItem("zest_transactions");
-    if (saved) return JSON.parse(saved);
-    return [
-      {
-        type: "Funds Added",
-        desc: "UPI Transaction ID: 412290811",
-        date: "Oct 24, 2023, 10:45 AM",
-        amount: "+ ₹ 25,000.00",
-        status: "Success",
-        typeClass: "add",
-        statusClass: "success",
-      },
-      {
-        type: "Withdrawal Requested",
-        desc: "Transfer to HDFC Bank (xxxx8812)",
-        date: "Oct 22, 2023, 03:12 PM",
-        amount: "- ₹ 12,000.00",
-        status: "Pending",
-        typeClass: "withdraw",
-        statusClass: "pending",
-      },
-      {
-        type: "Funds Added",
-        desc: "Netbanking ID: 90012234",
-        date: "Oct 20, 2023, 11:20 AM",
-        amount: "+ ₹ 7,910.45",
-        status: "Success",
-        typeClass: "add",
-        statusClass: "success",
-      },
-    ];
-  });
+  const [balance, setBalance] = useState(482910.45);
+  const [openingBalance, setOpeningBalance] = useState(450000.00);
+  const [usedMargin, setUsedMargin] = useState(120400.00);
+  const [transactions, setTransactions] = useState([]);
 
   // Modal states
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -61,13 +17,19 @@ const Funds = () => {
   const [withdrawInput, setWithdrawInput] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Sync to localStorage
+  // Load funds state from backend
   useEffect(() => {
-    localStorage.setItem("zest_margin_balance", balance.toString());
-    localStorage.setItem("zest_opening_balance", openingBalance.toString());
-    localStorage.setItem("zest_used_margin", usedMargin.toString());
-    localStorage.setItem("zest_transactions", JSON.stringify(transactions));
-  }, [balance, openingBalance, usedMargin, transactions]);
+    axios.get("http://localhost:3000/getFunds")
+      .then(res => {
+        setBalance(res.data.balance);
+        setOpeningBalance(res.data.openingBalance);
+        setUsedMargin(res.data.usedMargin);
+        setTransactions(res.data.transactions || []);
+      })
+      .catch(err => {
+        console.error("Error fetching funds:", err);
+      });
+  }, []);
 
   // Derived margin calculations
   const availableCash = balance - usedMargin;
@@ -88,30 +50,20 @@ const Funds = () => {
       return;
     }
 
-    const newBalance = balance + amt;
-    const txId = Math.floor(100000000 + Math.random() * 900000000);
-    const newTx = {
-      type: "Funds Added",
-      desc: paymentMethod === "UPI" ? `UPI Transaction ID: ${txId}` : `Netbanking Ref ID: ${txId}`,
-      date: new Date().toLocaleString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-      }),
-      amount: `+ ${formatCurrency(amt)}`,
-      status: "Success",
-      typeClass: "add",
-      statusClass: "success",
-    };
-
-    setBalance(newBalance);
-    setTransactions([newTx, ...transactions]);
-    setAmountInput("");
-    setIsAddOpen(false);
-    setErrorMessage("");
+    axios.post("http://localhost:3000/addFunds", { amount: amt, paymentMethod })
+      .then(res => {
+        setBalance(res.data.balance);
+        setOpeningBalance(res.data.openingBalance);
+        setUsedMargin(res.data.usedMargin);
+        setTransactions(res.data.transactions || []);
+        setAmountInput("");
+        setIsAddOpen(false);
+        setErrorMessage("");
+      })
+      .catch(err => {
+        console.error("Error adding funds:", err);
+        setErrorMessage("Failed to add funds. Please try again.");
+      });
   };
 
   const handleWithdrawFunds = (e) => {
@@ -127,38 +79,34 @@ const Funds = () => {
       return;
     }
 
-    const newBalance = balance - amt;
-    const newTx = {
-      type: "Withdrawal Requested",
-      desc: "Transfer to Linked Bank Account",
-      date: new Date().toLocaleString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-      }),
-      amount: `- ${formatCurrency(amt)}`,
-      status: "Success",
-      typeClass: "withdraw",
-      statusClass: "success",
-    };
-
-    setBalance(newBalance);
-    setTransactions([newTx, ...transactions]);
-    setWithdrawInput("");
-    setIsWithdrawOpen(false);
-    setErrorMessage("");
+    axios.post("http://localhost:3000/withdrawFunds", { amount: amt })
+      .then(res => {
+        setBalance(res.data.balance);
+        setOpeningBalance(res.data.openingBalance);
+        setUsedMargin(res.data.usedMargin);
+        setTransactions(res.data.transactions || []);
+        setWithdrawInput("");
+        setIsWithdrawOpen(false);
+        setErrorMessage("");
+      })
+      .catch(err => {
+        console.error("Error withdrawing funds:", err);
+        setErrorMessage(err.response?.data?.error || "Failed to withdraw funds. Please try again.");
+      });
   };
 
   const handleResetHistory = () => {
     if (window.confirm("Are you sure you want to reset balance and transaction history to default?")) {
-      localStorage.removeItem("zest_margin_balance");
-      localStorage.removeItem("zest_opening_balance");
-      localStorage.removeItem("zest_used_margin");
-      localStorage.removeItem("zest_transactions");
-      window.location.reload();
+      axios.post("http://localhost:3000/resetFunds")
+        .then(res => {
+          setBalance(res.data.balance);
+          setOpeningBalance(res.data.openingBalance);
+          setUsedMargin(res.data.usedMargin);
+          setTransactions(res.data.transactions || []);
+        })
+        .catch(err => {
+          console.error("Error resetting funds:", err);
+        });
     }
   };
 

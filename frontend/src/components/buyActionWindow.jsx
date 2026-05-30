@@ -58,6 +58,7 @@ const BuyActionWindow = ({ stock, onClose }) => {
       time: orderTime,
       typeClass: "buy",
       statusClass: orderType === "MARKET" ? "executed" : "pending",
+      productType: productType,
     };
 
     axios.post("http://localhost:3000/newOrder", orderData)
@@ -74,7 +75,8 @@ const BuyActionWindow = ({ stock, onClose }) => {
       .catch((err) => {
         console.error("Error placing buy order:", err);
         setIsSubmitting(false);
-        alert("Failed to place order. Please try again.");
+        const errMsg = err.response?.data?.error || "Failed to place order. Please try again.";
+        alert(errMsg);
       });
   };
 

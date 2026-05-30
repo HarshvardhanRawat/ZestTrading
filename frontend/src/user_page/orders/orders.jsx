@@ -44,6 +44,30 @@ const Orders = () => {
     return matchesSearch;
   });
 
+  const totalVolume = orders
+    .filter(
+      (o) =>
+        String(o.status).toLowerCase().includes("executed") ||
+        String(o.status).toLowerCase().includes("success") ||
+        String(o.status).toLowerCase().includes("completed")
+    )
+    .reduce((sum, o) => {
+      const q = parseInt(String(o.qty).split("/")[0].trim(), 10) || 0;
+      const p = parseFloat(String(o.price).replace(/,/g, "")) || 0;
+      return sum + q * p;
+    }, 0);
+
+  const formatVolume = (val) => {
+    if (val === 0) return "₹ 0";
+    if (val >= 10000000) return `₹ ${(val / 10000000).toFixed(2)} Cr`;
+    if (val >= 100000) return `₹ ${(val / 100000).toFixed(2)} L`;
+    return val.toLocaleString("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    });
+  };
+
   return (
     <div className="orders-container">
       <div className="page-header">
@@ -104,7 +128,7 @@ const Orders = () => {
             </div>
             <div className="stat-item border-left">
               <span className="stat-label">Total Volume</span>
-              <span className="stat-value">₹45.2L</span>
+              <span className="stat-value">{formatVolume(totalVolume)}</span>
             </div>
             <div className="stat-item border-left">
               <span className="stat-label">Order Health</span>

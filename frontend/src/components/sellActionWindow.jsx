@@ -57,6 +57,7 @@ const SellActionWindow = ({ stock, onClose }) => {
       time: orderTime,
       typeClass: "sell",
       statusClass: orderType === "MARKET" ? "executed" : "pending",
+      productType: productType,
     };
 
     axios.post("http://localhost:3000/newOrder", orderData)
@@ -65,7 +66,6 @@ const SellActionWindow = ({ stock, onClose }) => {
         setIsSuccess(true);
         setTimeout(() => {
           onClose();
-          // Optionally reload the page if we're on the orders tab to show the new order immediately
           if (window.location.pathname.endsWith("/orders")) {
             window.location.reload();
           }
@@ -74,7 +74,8 @@ const SellActionWindow = ({ stock, onClose }) => {
       .catch((err) => {
         console.error("Error placing sell order:", err);
         setIsSubmitting(false);
-        alert("Failed to place order. Please try again.");
+        const errMsg = err.response?.data?.error || "Failed to place order. Please try again.";
+        alert(errMsg);
       });
   };
 
