@@ -51,9 +51,9 @@ const Positions = () => {
     0
   );
 
-  const positivePL = formatCurrency(totalPositivePL);
-  const negativePL = formatCurrency(totalNegativePL);
-  const totalPL = formatCurrency(totalPositivePL + totalNegativePL);
+  const positivePL = (totalPositivePL >= 0 ? "+" : "") + formatCurrency(totalPositivePL);
+  const negativePL = (totalNegativePL > 0 ? "+" : "") + formatCurrency(totalNegativePL);
+  const totalPL = (totalPositivePL + totalNegativePL >= 0 ? "+" : "") + formatCurrency(totalPositivePL + totalNegativePL);
   const positionCount = allPositions.length;
 
   // CSV Exporter
@@ -71,12 +71,12 @@ const Positions = () => {
       pos.type,
     ]);
 
-    const csvContent = [
+    const csvContent = "\uFEFF" + [
       headers.join(","),
       ...rows.map((row) => row.map((val) => `"${val}"`).join(",")),
     ].join("\n");
 
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
@@ -85,6 +85,7 @@ const Positions = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
 
     // Show temporary visual confirmation
     setExportSuccess(true);
@@ -168,7 +169,7 @@ const Positions = () => {
             <tbody>
               {allPositions.length > 0 ? (
                 allPositions.map((pos, index) => (
-                  <tr key={index} className="hover-row">
+                  <tr key={pos._id || index} className="hover-row">
                     <td>
                       <div className="stock-info">
                         <span className="name">{pos.name}</span>

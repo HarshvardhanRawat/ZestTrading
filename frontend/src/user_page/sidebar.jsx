@@ -82,7 +82,7 @@ const Sidebar = () => {
               : (item.price && !isNaN(parseFloat(item.price)) ? parseFloat(item.price).toFixed(2) : '0.00');
 
             return (
-              <div className={`watchlist-item ${changeClass}`} key={item.id}>
+              <div className={`watchlist-item ${changeClass}`} key={item._id || item.id}>
                 <div className="item-info">
                   <span className="item-name">{item.name}</span>
                   <span className="item-exchange">{item.exchange}</span>

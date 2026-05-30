@@ -231,7 +231,7 @@ const Summary = () => {
           <h2 className="portfolio-amount">{portfolioDisplayValue}</h2>
           <div className="portfolio-change">
             <span className="material-symbols-outlined">trending_up</span>
-            <span className="change-text">+₹ 12,450.00 (0.84%) Today</span>
+            <span className="change-text">+₹12,450.00 (0.84%) Today</span>
           </div>
         </div>
 
@@ -343,7 +343,7 @@ const Summary = () => {
             <tbody>
               {displayOrders.length > 0 ? (
                 displayOrders.map((order, index) => (
-                  <tr key={index}>
+                  <tr key={order._id || index}>
                     <td>
                       <div className="stock-name">{order.instrument}</div>
                       <div className="stock-qty">Qty: {order.qty}</div>
@@ -397,7 +397,7 @@ const Summary = () => {
 
                   return (
                     <circle
-                      key={idx}
+                      key={sector.name}
                       cx="18"
                       cy="18"
                       r="15.95"
@@ -430,7 +430,7 @@ const Summary = () => {
             <div className="legend-grid">
               {activeSectors.map((sector, idx) => (
                 <div
-                  key={idx}
+                  key={sector.name}
                   className="legend-item"
                   style={{
                     cursor: "pointer",

@@ -175,6 +175,11 @@ body {
   padding-top: 64px;
 }
 
+body:has(.dashboard-wrapper),
+body.dashboard-active {
+  padding-top: 0;
+}
+
 a {
   text-decoration: none;
   color: inherit;

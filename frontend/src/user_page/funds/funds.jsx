@@ -126,7 +126,7 @@ const Funds = () => {
             <div className="item">
               <span className="label">Pay-in Amount</span>
               <span className={`val ${payInAmount >= 0 ? "secondary" : "negative"}`}>
-                {payInAmount >= 0 ? "+ " : ""}{formatCurrency(payInAmount)}
+                {payInAmount >= 0 ? "+" : ""}{formatCurrency(payInAmount)}
               </span>
             </div>
           </div>
@@ -177,7 +177,7 @@ const Funds = () => {
         <div className="transactions-list">
           {transactions.length > 0 ? (
             transactions.map((tx, index) => (
-              <div key={index} className="tx-row">
+              <div key={tx._id || index} className="tx-row">
                 <div className="tx-icon">
                   <div className={`icon-circle ${tx.typeClass}`}>
                     <span className="material-symbols-outlined">
@@ -193,7 +193,7 @@ const Funds = () => {
                   <span>{tx.date}</span>
                 </div>
                 <div className="tx-amount">
-                  <span className={tx.typeClass === "add" ? "secondary" : "negative"}>{tx.amount}</span>
+                  <span className={tx.typeClass === "add" ? "secondary" : "negative"}>{tx.amount.replace(/\s+/g, "")}</span>
                 </div>
                 <div className="tx-status">
                   <span className={`status-tag ${tx.statusClass}`}>{tx.status}</span>

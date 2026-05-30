@@ -39,6 +39,13 @@ const Dashboard = () => {
     verifyUser();
   }, [navigate]);
 
+  useEffect(() => {
+    document.body.classList.add("dashboard-active");
+    return () => {
+      document.body.classList.remove("dashboard-active");
+    };
+  }, []);
+
   if (loading) {
     return (
       <div className="auth-loading-screen">

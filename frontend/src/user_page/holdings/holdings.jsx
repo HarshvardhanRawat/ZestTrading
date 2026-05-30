@@ -139,7 +139,7 @@ const Holdings = () => {
             </thead>
             <tbody>
               {AllHoldings.map((stock, index) => (
-                <tr key={index} className="hover-row">
+                <tr key={stock._id || index} className="hover-row">
                   <td>
                     <div className="stock-info">
                       <span className="name">{stock.name}</span>
@@ -258,7 +258,7 @@ const Holdings = () => {
                     <span className="label">Sector Allocations</span>
                     <div className="allocations-list">
                       {sectors.map((sec, idx) => (
-                        <div key={idx} className="alloc-row">
+                        <div key={sec.name} className="alloc-row">
                           <div className="alloc-header">
                             <span className="sec-name">{sec.name}</span>
                             <span className="sec-val">{formatCurrency(sec.val)} ({sec.pct}%)</span>

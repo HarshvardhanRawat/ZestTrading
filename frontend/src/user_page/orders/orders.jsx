@@ -124,7 +124,7 @@ const Orders = () => {
             </div>
             <div className="stat-item border-left">
               <span className="stat-label">Pending Orders</span>
-              <span className="stat-value tertiary">{openOrdersCount.toString().padStart(2, "0")}</span>
+              <span className="stat-value tertiary">{openOrdersCount}</span>
             </div>
             <div className="stat-item border-left">
               <span className="stat-label">Total Volume</span>
@@ -154,7 +154,7 @@ const Orders = () => {
             <tbody>
               {filteredOrders.length > 0 ? (
                 filteredOrders.map((order, index) => (
-                  <tr key={index}>
+                  <tr key={order._id || index}>
                     <td>
                       <div className="stock-info">
                         <span className="name">{order.instrument}</span>

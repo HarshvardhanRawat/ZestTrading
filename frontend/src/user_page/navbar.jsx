@@ -57,10 +57,7 @@ const Navbar = ({ username }) => {
           <span className="material-symbols-outlined">logout</span>
         </button>
         <div className="nav-profile">
-          <img
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHb7SKpHBUxV5J1EqBdaJnOZa8BxYKYPGjl8Pyd1DpeIIu8STgOMNKboCfaZCsIStvjaE-e3jbowgyxSN_CgAGF_8WEILawrEoqEx9TqPIzMXHdh4Z0kJ9PXPHawc5x67ocFExSsMZ59F80MTAgbHYlx_Hnb2uqiKQ2XxBF82yrQ776SaxaCMcw6nyHFhW7HiKnDvra4rYM1fH7XUdoaOE9mxMNQwV_j3xZvdH-t8fmq90O830fWaABL20a5r14L8BTiFvhILJ5Cg"
-            alt="Profile"
-          />
+          <span className="material-symbols-outlined profile-icon">account_circle</span>
           <span className="profile-name">{username || "User"}</span>
         </div>
       </div>
