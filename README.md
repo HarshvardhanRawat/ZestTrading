@@ -89,7 +89,11 @@ Both servers need to be running simultaneously for the app to work.
 
 ## Screenshots
 
-> _(Add screenshots or a demo GIF of the dashboard, order window, and authentication screens here)_
+<img src='https://github.com/dotrwt/ZestTrading/blob/main/Zest_UI/UI_%20(12).png'>
+
+<img src='https://github.com/dotrwt/ZestTrading/blob/main/Zest_UI/UI_%20(6).png'>
+
+<img src='https://github.com/dotrwt/ZestTrading/blob/main/Zest_UI/UI_%20(11).png'>
 
 ---
 
