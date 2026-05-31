@@ -56,13 +56,15 @@ Create a `.env` file in the `backend/` directory with the following:
 PORT=3000
 MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/zest
 JWT_SECRET=your_super_secret_jwt_key_here
+FRONTEND_URL=http://frontend_url
 ```
 
-| Variable     | Required | Description                                                                   |
-| ------------ | -------- | ----------------------------------------------------------------------------- |
-| `PORT`       | No       | Port the server listens on. Defaults to `3000`.                               |
-| `MONGO_URI`  | Yes      | MongoDB connection string. App will not start without it.                     |
-| `JWT_SECRET` | Yes      | Secret key used to sign and verify JWT tokens. App will not start without it. |
+| Variable      | Required | Description                                                                   |
+| ------------  | -------- | ----------------------------------------------------------------------------- |
+| `PORT`        | No       | Port the server listens on. Defaults to `3000`.                               |
+| `MONGO_URI`   | Yes      | MongoDB connection string. App will not start without it.                     |
+| `JWT_SECRET`  | Yes      | Secret key used to sign and verify JWT tokens. App will not start without it. |
+| `FRONTEND_URL`| Yes      | To connect backend to frontend                                                |
 
 > Never commit your `.env` file. It is already listed in `.gitignore`.
 
