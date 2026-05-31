@@ -2,7 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
 function ServerStatusBanner() {
-    const [status, setStatus] = useState('checking'); // 'checking' | 'offline' | 'online' | 'hidden'
+    const [status, setStatus] = useState(() => {
+        // If server was already shown as connected in this session, don't show the banner
+        if (sessionStorage.getItem('server_connected_shown') === 'true') {
+            return 'hidden';
+        }
+        return 'checking';
+    }); // 'checking' | 'offline' | 'online' | 'hidden'
     const [timeLeft, setTimeLeft] = useState(60);
     const pollingIntervalRef = useRef(null);
     const countdownIntervalRef = useRef(null);
@@ -13,6 +19,7 @@ function ServerStatusBanner() {
             const response = await axios.get(`${apiUrl}/ping`);
             if (response.data && response.data.status === 'ok') {
                 setStatus('online');
+                sessionStorage.setItem('server_connected_shown', 'true');
                 clearInterval(pollingIntervalRef.current);
                 clearInterval(countdownIntervalRef.current);
                 // Hide the banner after 3 seconds of success
@@ -29,6 +36,11 @@ function ServerStatusBanner() {
     };
 
     useEffect(() => {
+        // If already connected and shown, skip server checks and polling
+        if (sessionStorage.getItem('server_connected_shown') === 'true') {
+            return;
+        }
+
         // Initial check
         checkServer();
 

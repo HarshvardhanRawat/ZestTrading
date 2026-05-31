@@ -1,11 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import logoImg from '../assets/Zest_logo.png';
 import { useTheme } from '../hooks/useTheme';
 import ServerStatusBanner from '../components/ServerStatusBanner';
 
 function Navbar() {
   const [theme, toggleTheme] = useTheme();
+  const location = useLocation();
+  const showBanner = location.pathname === '/login' || location.pathname === '/signup';
 
   return (
     <>
@@ -31,7 +33,7 @@ function Navbar() {
           </div>
         </div>
       </nav>
-      <ServerStatusBanner />
+      {showBanner && <ServerStatusBanner />}
     </>
   );
 }
